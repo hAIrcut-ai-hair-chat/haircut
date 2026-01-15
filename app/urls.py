@@ -11,11 +11,10 @@ from core.views import UserViewSet
 
 router = DefaultRouter()
 
-router.register(r'usuarios', UserViewSet, basename='usuarios')
+router.register(r'users', UserViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # OpenAPI 3
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path(
         'api/swagger/',
@@ -27,6 +26,5 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name='schema'),
         name='redoc',
     ),
-    # API
     path('api/', include(router.urls)),
 ]

@@ -1,7 +1,3 @@
-"""
-Database models.
-"""
-
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -38,7 +34,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """User model in the system."""
 
     passage_id = models.CharField(max_length=255, unique=True, verbose_name=_('passage_id'), help_text=_('Passage ID'))
     email = models.EmailField(max_length=255, unique=True, verbose_name=_('email'), help_text=_('Email'))
@@ -58,7 +53,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     class Meta:
-        """Meta options for the model."""
-
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
