@@ -7,10 +7,11 @@ from drf_spectacular.views import (
 )
 from rest_framework.routers import DefaultRouter
 
-from core.views import UserViewSet
+from core.views import UserViewSet, UserAiQuestionViewSet
 
 router = DefaultRouter()
 
+router.register(r"question", UserAiQuestionViewSet, basename="question")
 router.register(r'users', UserViewSet, basename='users')
 
 urlpatterns = [
