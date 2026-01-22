@@ -158,3 +158,5 @@ PASSAGE_API_KEY = os.getenv('PASSAGE_API_KEY', 'api_key')
 
 # Exibe as configurações principais para verificação
 print(f'{MODE = } \n{MEDIA_URL = } \n{DATABASES = }')
+
+HF_TOKEN = os.getenv("HF_TOKEN")

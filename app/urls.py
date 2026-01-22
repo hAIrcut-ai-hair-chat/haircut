@@ -8,9 +8,12 @@ from drf_spectacular.views import (
 from rest_framework.routers import DefaultRouter
 
 from core.views import UserViewSet, UserAiQuestionViewSet
+from uploader.views import ImageUploadViewSet
+
 
 router = DefaultRouter()
 
+router.register("image", ImageUploadViewSet, basename="image")
 router.register(r"question", UserAiQuestionViewSet, basename="question")
 router.register(r'users', UserViewSet, basename='users')
 
