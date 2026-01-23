@@ -7,8 +7,9 @@ from rest_framework.viewsets import ModelViewSet
 import requests
 import os
 
-from core.models import UserAiQuestion
-from core.serializers import UserAiQuestionSerializer, UserImageAiQuestionSerializer
+from core.models import UserAiQuestion, UserImageAiQuestion
+from core.serializers import UserAiQuestionSerializer
+from uploader.models.image import Image
 
 django_url = os.getenv("BACKEND_URL")
 
@@ -23,11 +24,15 @@ class UserAiQuestionViewSet(ModelViewSet):
         question_serializer = UserAiQuestionSerializer(data=request.data)
         question_serializer.is_valid(raise_exception=True)
 
-        image = question_serializer.validated_data.pop("image")
+        image_file = question_serializer.validated_data.pop("image")
         question = question_serializer.save()
 
         try:
-            uploader_response = requests.post(f"{django_url}/image/",files={"file": image},timeout=10)
+            uploader_response = requests.post(
+                f"{django_url}/image/",
+                files={"file": image_file},
+                timeout=10
+            )
             uploader_response.raise_for_status()
         except Exception as error:
             question.delete()
@@ -36,16 +41,20 @@ class UserAiQuestionViewSet(ModelViewSet):
         uploader_data = uploader_response.json()
 
         try:
-            image_serializer = UserImageAiQuestionSerializer(data={
-                "image": uploader_data["attachment_key"], 
-                "user_ai_question_uuid": question.uuid
-                }
-            )
-            image_serializer.is_valid(raise_exception=True)
-            image_serializer.save()
-        except Exception as error:
+            image_instance = Image.objects.get(pk=uploader_data["id"])
+        except Image.DoesNotExist:
             question.delete()
-            raise ValidationError({"db": f"Saving image info failed: \n {error}"})
+            raise ValidationError({"image": "Uploaded image not found in DB"})
+
+        UserImageAiQuestion.objects.create(
+            user_ai_question_uuid=question,
+            image=image_instance
+        )
 
         return Response(
-            {"message": "Question with image created successfully", "question_uuid": question.uuid}, status=status.HTTP_201_CREATED)
+            {
+                "message": "Question with image created successfully",
+                "question_uuid": question.uuid
+            },
+            status=status.HTTP_201_CREATED
+        )
