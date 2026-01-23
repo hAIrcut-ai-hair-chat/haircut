@@ -151,3 +151,4 @@ PASSAGE_API_KEY = os.getenv('PASSAGE_API_KEY', 'api_key')
 print(f'{MODE = } \n{MEDIA_URL = } \n{DATABASES = }')
 
 HF_TOKEN = os.getenv("HF_TOKEN")
+HF_AI_MODEL = os.getenv("HF_AI_MODEL")

@@ -6,6 +6,8 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 import requests
 import os
+from core.services import HuggingFaceChatService
+
 
 from core.models import UserAiQuestion
 from core.serializers import UserAiQuestionSerializer, UserImageAiQuestionSerializer
@@ -49,3 +51,7 @@ class UserAiQuestionViewSet(ModelViewSet):
 
         return Response(
             {"message": "Question with image created successfully", "question_uuid": question.uuid}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['post'])
+    def ask_ai(question: str) -> str:
+        pass

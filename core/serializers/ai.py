@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, ImageField, SlugRelatedField
-from core.models import UserAiQuestion, UserImageAiQuestion
+from core.models import UserAiQuestion, UserImageAiQuestion, AskAi
 from uploader.models import Image
 
 class UserAiQuestionSerializer(ModelSerializer):
@@ -18,3 +18,9 @@ class UserImageAiQuestionSerializer(ModelSerializer):
     class Meta:
         model = UserImageAiQuestion
         fields = ["user_ai_question_uuid", "image"]
+        
+class AskAiSerializer(ModelSerializer):
+    class Meta:
+        model = AskAi
+        fields = ["attachment_uuid", "ai_response", "created_at"]
+        read_only_fields = ["attachment_uuid", "created_at"]

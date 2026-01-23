@@ -18,7 +18,14 @@ class UserImageAiQuestion(models.Model):
     user_ai_question_uuid = models.ForeignKey(UserAiQuestion, on_delete=models.PROTECT)
     image = models.ForeignKey(Image, on_delete=models.PROTECT)
     
-    
+class AskAi(models.Model):
+    attachment_uuid = models.UUIDField(default=uuid.uuid4, auto_created=True)
+    ai_response = models.TextField(max_length=5000)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    question_uuid = models.ForeignKey(UserImageAiQuestion, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.ai_response    
     
 
     
