@@ -1,2 +1,2 @@
 from .user import UserSerializer
-from .ai import UserAiQuestionSerializer, UserImageAiQuestionSerializer
+from .ai import UserAiQuestionSerializer, UserImageAiQuestionSerializer, AskAiSerializer

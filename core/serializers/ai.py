@@ -22,5 +22,5 @@ class UserImageAiQuestionSerializer(ModelSerializer):
 class AskAiSerializer(ModelSerializer):
     class Meta:
         model = AskAi
-        fields = ["attachment_uuid", "ai_response", "created_at"]
+        fields = ["attachment_uuid", "ai_response", "created_at", "question_uuid"]
         read_only_fields = ["attachment_uuid", "created_at"]
