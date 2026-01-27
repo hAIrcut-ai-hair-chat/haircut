@@ -4,17 +4,12 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
-# Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
 
-# Define o modo de execução da aplicação
 MODE = os.getenv('MODE')
 
-
-# Constrói o caminho base do projeto, usado para definir caminhos relativos
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Segurança e configuração básica
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure')
 DEBUG = os.getenv('DEBUG', 'False')
 ALLOWED_HOSTS = ['*']
@@ -24,7 +19,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Aplicações instaladas
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,7 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
-# Banco de dados
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -84,7 +77,6 @@ DATABASES = {
     )
 }
 
-# Validação de senhas
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -138,8 +130,6 @@ SPECTACULAR_SETTINGS = {
 AUTH_USER_MODEL = 'core.User'
 
 REST_FRAMEWORK = {
-    # "DEFAULT_AUTHENTICATION_CLASSES": ("core.authentication.TokenAuthentication",),
-    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",),
     'DEFAULT_PAGINATION_CLASS': 'app.pagination.CustomPagination',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'PAGE_SIZE': 10,
@@ -152,3 +142,28 @@ print(f'{MODE = } \n{MEDIA_URL = } \n{DATABASES = }')
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 HF_AI_MODEL = os.getenv("HF_AI_MODEL")
+
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+GEMINI_CONFIG = {
+    'API_KEY': GEMINI_API_KEY,
+    'MODEL_NAME': os.getenv('GEMINI_MODEL', 'gemini-pro'),
+    'EMBEDDING_MODEL': os.getenv('EMBEDDING_MODEL', 'models/embedding-001'),
+    'TEMPERATURE': float(os.getenv('TEMPERATURE', 0.3)),
+}
+
+VECTOR_STORE_CONFIG = {
+    'PERSIST_DIRECTORY': os.path.join(BASE_DIR, 'vector_store'),
+    'CHROMA_COLLECTION_NAME': 'rag_documents',
+    'CHUNK_SIZE': int(os.getenv('CHUNK_SIZE', 1000)),
+    'CHUNK_OVERLAP': int(os.getenv('CHUNK_OVERLAP', 200)),
+    'SEARCH_K': int(os.getenv('SEARCH_K', 4)),
+    'SCORE_THRESHOLD': float(os.getenv('SCORE_THRESHOLD', 0.5)),
+}
+
+DOCUMENT_CONFIG = {
+    'SUPPORTED_FORMATS': ['pdf', 'txt', 'csv', 'md', 'html'],
+    'MAX_FILE_SIZE': 10 * 1024 * 1024, 
+    'UPLOAD_DIR': os.path.join(BASE_DIR, 'media/documents'),
+}
+

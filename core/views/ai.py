@@ -13,6 +13,8 @@ from core.models.ai import AskAi, UserImageAiQuestion
 from core.services import HuggingFaceChatService
 from core.models import UserAiQuestion
 from core.serializers import UserAiQuestionSerializer, UserImageAiQuestionSerializer, AskAiSerializer
+from rest_framework.views import APIView
+
 
 django_url = os.getenv("BACKEND_URL")
 hf_chat = HuggingFaceChatService()
@@ -75,5 +77,12 @@ class UserAiQuestionViewSet(ModelViewSet):
         }, status=status.HTTP_201_CREATED)
  
 
+class TestRagApiView(APIView):
+    def post(self, request):
+        question: str = question.data.get("question")
+        user_id: str = question.data.get("user_id")
+        
+        if not question or not user_id:
+            return Response({"message": "Question or user_id didn't offered"}, status=status.HTTP_400_BAD_REQUEST)
         
         
