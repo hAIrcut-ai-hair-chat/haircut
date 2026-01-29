@@ -16,6 +16,7 @@ from core.services import GeminiService
 gemini_service = GeminiService()
 
 django_url = os.getenv("BACKEND_URL")
+print(django_url)
 
 class UserAiQuestionViewSet(ModelViewSet):
     queryset = UserAiQuestion.objects.all()
