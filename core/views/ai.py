@@ -75,11 +75,18 @@ class TestAPIView(APIView):
         
         if not context:
             return Response({"message": f"Context didn't not offered"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            gemini_response = gemini_service.generate_response(context=context, prompt=context)
+        except Exception as error:
+            return Response (
+                {
+                    "messaage": f"There's a exception with relationship gemini service: {error}"
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         
-        gemini_response = gemini_service.generate_response(context=context)
-        
-        if not gemini_service['success']:
-            return Response({"messsage": f"There's a error in generate response in gemini service"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(gemini_response)
+        if not gemini_response['success']:
+            return Response({"message": f"There's a error in generate response in gemini service"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(
             {

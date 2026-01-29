@@ -147,7 +147,7 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 GEMINI_CONFIG = {
     'API_KEY': GEMINI_API_KEY,
-    'MODEL_NAME': os.getenv('GEMINI_MODEL', 'gemini-pro'),
+    'MODEL_NAME': os.getenv('GEMINI_MODEL', '"gemini-2.5-pro'),
     'EMBEDDING_MODEL': os.getenv('EMBEDDING_MODEL', 'models/embedding-001'),
     'TEMPERATURE': float(os.getenv('TEMPERATURE', 0.3)),
 }
