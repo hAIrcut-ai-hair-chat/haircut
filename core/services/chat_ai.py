@@ -1,50 +1,42 @@
-import requests
+import json
+import re
+from urllib import response
 from django.conf import settings
+from httpx import head
+import requests
 
+class PotasKwenAi:
+    def __init__(self):
+        self.base_url = settings.HF_BASE_URL
+        self.hf_token = settings.HF_TOKEN
 
-class HuggingFaceChatService:
-
-    URL = "https://router.huggingface.co/v1/chat/completions"
-    MODEL = "HuggingFaceH4/zephyr-7b-beta" 
-
-    @staticmethod
-    def ask(question: str) -> str:
-        headers = {
-            "Authorization": f"Bearer {settings.HF_TOKEN}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
+        self.headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
         }
-
-        payload = {
-            "model": HuggingFaceChatService.MODEL,
-            "messages": [
-                {"role": "user", "content": question}
-            ],
-            "max_tokens": 300,
-            "temperature": 0.7,
-            "stream": False
+        
+    def root(self) -> dict:
+        try:
+            response = requests.get(self.base_url, headers=self.headers)
+        except Exception as error:
+            raise ValueError(f"There's a error in method root in chat hf ai: {error}")
+        
+        return {
+            "message": "HF gguf root endpoint response",
+            "json": response.json(),
+            "status_code": response.status_code
         }
-
+        
+    def root(self, prompt: str) -> dict:
+        
         try:
-            response = requests.post(
-                HuggingFaceChatService.URL,
-                headers=headers,
-                json=payload,
-                timeout=60
-            )
-
-            if response.status_code != 200:
-                raise Exception(
-                    f"HF ERROR {response.status_code}: {response.text}"
-                )
-
-            data = response.json()
-
-        except requests.exceptions.RequestException as e:
-            raise Exception(f"HuggingFace request failed: {e}")
-
-        # 🔍 Formato correto da resposta do Router
-        try:
-            return data["choices"][0]["message"]["content"].strip()
-        except Exception:
-            raise Exception(f"Invalid HF response format: {data}")
+            response = requests.post(f"{self.base_url}/generate", headers=self.headers, json={"prompt": prompt})
+        except Exception as error:
+            raise ValueError(f"There's a error in method chas in chat hf ai: {error}")
+        
+        return {
+            "message": "HF gguf root endpoint response",
+            "json": response.json(),
+            "status_code": response.status_code
+        }
+        

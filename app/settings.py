@@ -142,15 +142,16 @@ print(f'{MODE = } \n{MEDIA_URL = } \n{DATABASES = }')
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 HF_AI_MODEL = os.getenv("HF_AI_MODEL")
+HF_BASE_URL = os.getenv("HF_BASE_URL")
 
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+"""GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 GEMINI_CONFIG = {
     'API_KEY': GEMINI_API_KEY,
     'MODEL_NAME': os.getenv('GEMINI_MODEL', '"gemini-2.5-pro'),
     'EMBEDDING_MODEL': os.getenv('EMBEDDING_MODEL', 'models/embedding-001'),
     'TEMPERATURE': float(os.getenv('TEMPERATURE', 0.3)),
-}
+}"""
 
 VECTOR_STORE_CONFIG = {
     'PERSIST_DIRECTORY': os.path.join(BASE_DIR, 'vector_store'),
