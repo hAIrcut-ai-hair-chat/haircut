@@ -7,7 +7,7 @@ from drf_spectacular.views import (
 )
 from rest_framework.routers import DefaultRouter
 
-from core.views import UserViewSet, UserAiQuestionViewSet, TestAPIView
+from core.views import UserViewSet, UserAiQuestionViewSet
 from uploader.views import ImageUploadViewSet
 
 
@@ -23,5 +23,4 @@ urlpatterns = [
     path('api/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui',),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc',),
     path('api/', include(router.urls)),
-    path("api/test/", TestAPIView.as_view()),
 ]

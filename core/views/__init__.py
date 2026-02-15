@@ -1,2 +1,2 @@
 from .user import UserViewSet
-from .ai import UserAiQuestionViewSet, TestAPIView
+from .ai import UserAiQuestionViewSet

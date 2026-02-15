@@ -1,2 +1,1 @@
-from .chat_ai import HuggingFaceChatService
-from .gemini_service import GeminiService
+from core.services.chat_ai import PotasKwenAi
