@@ -26,12 +26,11 @@ class UserAiQuestionViewSet(ModelViewSet):
     def question_with_image(self, request):
         serializer = UserAiQuestionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
+        
         image = serializer.validated_data.pop("image", None)
         prompt = serializer.validated_data.get("question", None)
+        
         question = serializer.save()
-
-        attachment_key = None
 
         if image:
             try:
@@ -44,6 +43,7 @@ class UserAiQuestionViewSet(ModelViewSet):
                 uploader_response.raise_for_status()
                 uploader_data = uploader_response.json()
                 attachment_key = uploader_data.get("attachment_key")
+
             except Exception as error:
                 question.delete()
                 raise ValidationError({"uploader": f"Upload failed: {error}"})
@@ -51,16 +51,26 @@ class UserAiQuestionViewSet(ModelViewSet):
             try:
                 image_serializer = UserImageAiQuestionSerializer(data={
                     "image": attachment_key,
-                    "user_ai_question_uuid": question.uuid  
+                    "user_ai_question_uuid": question.uuid
                 })
                 image_serializer.is_valid(raise_exception=True)
                 image_serializer.save()
+
             except Exception as error:
                 question.delete()
-                raise ValidationError({"db": f"Saving image info failed: {error}"})
+                raise ValidationError({"db": f"Saving image info failed: {error}"})            
             
+        try:
+            ai_response = potas_kwen_ai.generate(prompt=prompt)
+            ai_prompt = ai_response["json"]["prompt"]
+            ai_text = ai_response["json"]["response"]
             
-            ai_response = potas_kwen_ai.generate(prompt=prompt)   
+            question.question = ai_prompt
+            question.response = ai_text
+            question.save()
+        except Exception as error:
+            question.delete()
+            raise ValidationError({"ai": f"AI generation failed: {error}"})
 
         return Response(
             {
@@ -71,5 +81,3 @@ class UserAiQuestionViewSet(ModelViewSet):
             },
             status=status.HTTP_201_CREATED
         )
-
-            
