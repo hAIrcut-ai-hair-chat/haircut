@@ -4,17 +4,13 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework import status
-from rest_framework.views import APIView
 
 import requests
 import os
 
 from core.models import UserAiQuestion
 from core.serializers import UserAiQuestionSerializer, UserImageAiQuestionSerializer
-from core.services import PotasKwenAi
-
-potas_kwen_ai = PotasKwenAi()
-
+from core.tasks import celeryAiChat
 
 django_url = os.getenv("BACKEND_URL")
 class UserAiQuestionViewSet(ModelViewSet):
@@ -61,7 +57,7 @@ class UserAiQuestionViewSet(ModelViewSet):
                 raise ValidationError({"db": f"Saving image info failed: {error}"})            
             
         try:
-            ai_response = potas_kwen_ai.generate(prompt=prompt)
+            ai_response = celeryAiChat.delay(prompt=prompt)
             ai_prompt = ai_response["json"]["prompt"]
             ai_text = ai_response["json"]["response"]
             

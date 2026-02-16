@@ -127,6 +127,10 @@ check = "ruff check"
 pre_format = "ruff check --fix"
 format = "ruff format"
 auth_test = "python3 manage.py test core.test.MeEndpointTest.test_me_authenticated"
+docker = "docker run -d --name redis -p 6379:6379 redis"
+server = "uvicorn core.asgi:application --reload"
+celery = "celery -A core worker -l info"
+flower = "celery -A core flower --port=5555"
 
 [tool.pdm]
 distribution = true
@@ -155,7 +159,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "user.name: kauabarros-25", email = "user.mail: martinsbarroskaua@gmail.com"},
 ]
-dependencies = ["dotenv>=0.9.9"]
+dependencies = ["dotenv>=0.9.9", "celery>=5.6.2", "redis>=7.1.1", "django-celery-results>=2.6.0", "flower>=2.0.1"]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
