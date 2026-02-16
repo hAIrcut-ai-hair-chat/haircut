@@ -51,7 +51,7 @@ class UserAiQuestionViewSet(ModelViewSet):
             try:
                 image_serializer = UserImageAiQuestionSerializer(data={
                     "image": attachment_key,
-                    "user_ai_question_uuid": question.uuid
+                    "user_ai_question_uuid": question.uuid  
                 })
                 image_serializer.is_valid(raise_exception=True)
                 image_serializer.save()
