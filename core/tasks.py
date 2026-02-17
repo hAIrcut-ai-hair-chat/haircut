@@ -19,3 +19,7 @@ def celeryAiChat(prompt: str, question_uuid: str):
     ai_question.save(update_fields=["response"])
     
     return {"uuid": str(question_uuid), "ai_response": response_text}
+
+@shared_task(autoretry_for=(Exception,), retry_backoff=5, retry_kwargs={"max_retries": 3})
+def celeryAiImage(prompt: str, image, question_uuid: str):
+    pass
