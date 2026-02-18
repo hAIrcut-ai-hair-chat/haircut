@@ -11,7 +11,7 @@ import os
 
 from core.models import UserAiQuestion
 from core.serializers import UserAiQuestionSerializer, UserImageAiQuestionSerializer
-from core.tasks import celeryAiChat
+from core.tasks import celeryAiChat, celeryAiImage
 
 django_url = os.getenv("BACKEND_URL")
 class UserAiQuestionViewSet(ModelViewSet):
@@ -26,21 +26,21 @@ class UserAiQuestionViewSet(ModelViewSet):
 
         image = serializer.validated_data.pop("image", None)
         prompt = serializer.validated_data.get("question", None)
+        
+        ai_image = celeryAiImage(prompt=prompt, image=image)
 
         question = serializer.save()
         attachment_key = None  
 
-        if image:
+        if ai_image:
             try:
-                image.seek(0)
+                ai_image.seek(0)
                 
-                print("1")
                 uploader_response = requests.post(
                     f"{django_url}/image/",
-                    files={"file": image},
+                    files={"file": ai_image},
                     timeout=10
                 )
-                print("2")
                 uploader_response.raise_for_status()
                 uploader_data = uploader_response.json()
                 attachment_key = uploader_data.get("attachment_key")
@@ -55,9 +55,7 @@ class UserAiQuestionViewSet(ModelViewSet):
                     "user_ai_question_uuid": question.uuid
                 })
                 image_serializer.is_valid(raise_exception=True)
-                print(3)
                 image_serializer.save()
-                print(4)
             except Exception as error:
                 question.delete()
                 raise ValidationError({"db": f"Saving image info failed: {error}"})
