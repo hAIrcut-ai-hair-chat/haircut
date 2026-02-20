@@ -38,17 +38,17 @@ class UserAiQuestionViewSet(ModelViewSet):
         image_base64 = None
 
         if image:
+            print(image)
             image_bytes = image.read()
             image_base64 = base64.b64encode(image_bytes).decode("utf-8")
             image.seek(0)
-
+            
             uploader_response = requests.post(
-                f"{settings.DJANGO_URL}/image",
+                f"{settings.DJANGO_URL}/image/",
                 files={"file": image},
                 timeout=10
             )
-            uploader_response.raise_for_status()
-
+            print(f"\n\n\n\n\n\n{uploader_response.status_code}\n\n\n\n\n\n")
             attachment_key = uploader_response.json().get("attachment_key")
 
             image_serializer = UserImageAiQuestionSerializer(data={
