@@ -58,16 +58,14 @@ class UserAiQuestionViewSet(ModelViewSet):
             image_serializer.is_valid(raise_exception=True)
             image_serializer.save()
 
-        def send_tasks():
             if image_base64:
                 celeryAiImage.delay(prompt=prompt, image_b64=image_base64)
+                
 
             celeryAiChat.delay(
                 prompt=prompt,
                 question_uuid=str(question.uuid)
             )
-
-        on_commit(send_tasks)
 
         return Response(
             {
