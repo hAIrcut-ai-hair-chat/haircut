@@ -38,17 +38,16 @@ class UserAiQuestionViewSet(ModelViewSet):
         image_base64 = None
 
         if image:
-            print(image)
             image_bytes = image.read()
             image_base64 = base64.b64encode(image_bytes).decode("utf-8")
             image.seek(0)
-            
+
             uploader_response = requests.post(
                 f"{settings.DJANGO_URL}/image/",
                 files={"file": image},
                 timeout=10
             )
-            print(f"\n\n\n\n\n\n{uploader_response.status_code}\n\n\n\n\n\n")
+
             attachment_key = uploader_response.json().get("attachment_key")
 
             image_serializer = UserImageAiQuestionSerializer(data={
@@ -58,14 +57,12 @@ class UserAiQuestionViewSet(ModelViewSet):
             image_serializer.is_valid(raise_exception=True)
             image_serializer.save()
 
-            if image_base64:
-                celeryAiImage.delay(prompt=prompt, image_b64=image_base64)
-                
+            celeryAiImage.delay(prompt=prompt, image_b64=image_base64)
 
-            celeryAiChat.delay(
-                prompt=prompt,
-                question_uuid=str(question.uuid)
-            )
+        celeryAiChat.delay(
+            prompt=prompt,
+            question_uuid=str(question.uuid)
+        )
 
         return Response(
             {

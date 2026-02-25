@@ -21,6 +21,6 @@ def celeryAiChat(prompt: str, question_uuid: str):
     
     return {"uuid": str(question_uuid), "ai_response": response_text}
 
-@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError), retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
+@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def celeryAiImage(prompt: str, image_b64: str):
     return PotasImageAI().image(prompt=prompt, image_b64=image_b64)
