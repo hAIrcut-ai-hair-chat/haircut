@@ -6,17 +6,21 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODE = os.getenv('MODE')
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+MODE = os.getenv('MODE', 'DEVELOPMENT')
+
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure')
-DEBUG = os.getenv('DEBUG', 'False')
+
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
 ALLOWED_HOSTS = ['*']
+
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
 ]
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
@@ -67,49 +71,41 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
         conn_max_age=600,
-        conn_health_checks=True,
     )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
+
 USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
 
-MEDIA_ENDPOINT = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 FILE_UPLOAD_PERMISSIONS = 0o640
 
 if MODE == 'DEVELOPMENT':
     MY_IP = os.getenv('MY_IP', '127.0.0.1')
-    MEDIA_URL = f'http://{MY_IP}:19003/media/'
+    MEDIA_URL = f'http://{MY_IP}:8000/media/'
 else:
     MEDIA_URL = '/media/'
-    CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
     STORAGES = {
         'default': {
             'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
@@ -120,14 +116,8 @@ else:
     }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': '<PROJETO> API',
-    'DESCRIPTION': 'API para o projeto <descreva aqui seu projeto>.',
-    'VERSION': '1.0.0',
-}
-
 AUTH_USER_MODEL = 'core.User'
+APPEND_SLASH = False
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'app.pagination.CustomPagination',
@@ -135,23 +125,18 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': '<PROJETO> API',
+    'DESCRIPTION': 'API para o projeto <descreva aqui seu projeto>.',
+    'VERSION': '1.0.0',
+}
+
 PASSAGE_APP_ID = os.getenv('PASSAGE_APP_ID', 'app_id')
 PASSAGE_API_KEY = os.getenv('PASSAGE_API_KEY', 'api_key')
-
-print(f'{MODE = } \n{MEDIA_URL = } \n{DATABASES = }')
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 HF_AI_MODEL = os.getenv("HF_AI_MODEL")
 HF_BASE_URL = os.getenv("HF_BASE_URL")
-
-"""GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-
-GEMINI_CONFIG = {
-    'API_KEY': GEMINI_API_KEY,
-    'MODEL_NAME': os.getenv('GEMINI_MODEL', '"gemini-2.5-pro'),
-    'EMBEDDING_MODEL': os.getenv('EMBEDDING_MODEL', 'models/embedding-001'),
-    'TEMPERATURE': float(os.getenv('TEMPERATURE', 0.3)),
-}"""
 
 VECTOR_STORE_CONFIG = {
     'PERSIST_DIRECTORY': os.path.join(BASE_DIR, 'vector_store'),
@@ -164,18 +149,19 @@ VECTOR_STORE_CONFIG = {
 
 DOCUMENT_CONFIG = {
     'SUPPORTED_FORMATS': ['pdf', 'txt', 'csv', 'md', 'html'],
-    'MAX_FILE_SIZE': 10 * 1024 * 1024, 
+    'MAX_FILE_SIZE': 10 * 1024 * 1024,
     'UPLOAD_DIR': os.path.join(BASE_DIR, 'media/documents'),
 }
 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-DJANGO_URL = os.getenv("BACKEND_URL")
-    
-
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "America/Sao_Paulo"
 
-APPEND_SLASH = False
+DJANGO_URL = os.getenv("BACKEND_URL")
+
+print(f'MODE = {MODE}')
+print(f'MEDIA_URL = {MEDIA_URL}')
+print(f'DATABASE = {DATABASES["default"]["ENGINE"]}')

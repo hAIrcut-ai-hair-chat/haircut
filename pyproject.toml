@@ -47,7 +47,6 @@ dependencies = [
     "langchain-google-genai>=4.2.0",
     "matplotlib-inline==0.1.7",
     "mccabe==0.7.0",
-    "mysqlclient==2.2.7",
     "netifaces==0.11.0",
     "nodeenv==1.9.1",
     "packaging==24.1",
@@ -159,7 +158,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "user.name: kauabarros-25", email = "user.mail: martinsbarroskaua@gmail.com"},
 ]
-dependencies = ["dotenv>=0.9.9", "celery>=5.6.2", "redis>=7.1.1", "django-celery-results>=2.6.0", "flower>=2.0.1"]
+dependencies = ["dotenv>=0.9.9", "celery>=5.6.2", "redis>=7.1.1", "django-celery-results>=2.6.0", "flower>=2.0.1", "django-database-url>=1.0.3", "cloudinary>=1.44.1", "django-cloudinary-storage>=0.3.0", "django-cors-headers>=4.9.0", "django-extensions>=4.1", "django-filter>=25.2", "drf-spectacular>=0.29.0", "python-magic>=0.4.27", "pillow>=12.1.1", "pygraphviz>=1.14", "whitenoise>=6.12.0"]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
