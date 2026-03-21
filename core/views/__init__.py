@@ -1,3 +1,3 @@
 from .user import UserViewSet
 from .ai import UserAiQuestionViewSet
-from .views import FeedViewSet
+from .feed import FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet

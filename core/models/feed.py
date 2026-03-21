@@ -23,5 +23,4 @@ class Like(models.Model):
 class Save(models.Model):
     viewer = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Feed, on_delete=models.CASCADE)
-
     created_at = models.DateTimeField(auto_now_add=True)
