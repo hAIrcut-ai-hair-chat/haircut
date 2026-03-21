@@ -1,5 +1,5 @@
 from celery import shared_task
-from core.models import UserAiQuestion
+from core.models import UserAiQuestion, Feed
 from core.services import PotasKwenAi, PotasImageAI
 import requests
 
@@ -24,3 +24,13 @@ def celeryAiChat(prompt: str, question_uuid: str):
 @shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def celeryAiImage(prompt: str, image_b64: str):
     return PotasImageAI().image(prompt=prompt, image_b64=image_b64)
+
+@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
+def celeryAiFeed(image_b64: str):
+    image = image_b64.split(",")[1] if "," in image_b64 else image_b64
+
+    if not image:
+        raise ValueError("Invalid image data")
+
+    
+    
