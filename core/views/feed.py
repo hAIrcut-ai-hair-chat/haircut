@@ -2,6 +2,7 @@ from core.models import Feed, Views, Like, Save
 from core.serializers import FeedSerializer, ViewSerializer, LikeSerializer, SaveSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 class FeedViewSet(ModelViewSet):
@@ -19,3 +20,12 @@ class LikeViewSet(ModelViewSet):
 class SaveViewSet(ModelViewSet):
     queryset = Save.objects.all()
     serializer_class = SaveSerializer
+
+    @action(detail=False, methods=['get'])
+    def saved_posts(self, request):
+        user = self.kwargs.get('email')
+        saved_posts = Save.objects.filter(viewer_email=user)
+        if not self.saved_posts.exists():
+            return Response({"detail": "No saved posts found for this user."}, status=200)
+        serializer = self.get_serializer(saved_posts, many=True)
+        return Response(serializer.data)

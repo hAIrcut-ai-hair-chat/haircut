@@ -1,3 +1,6 @@
+from os import read
+from pickletools import read_long1
+
 from rest_framework.serializers import ModelSerializer
 
 from core.models import User
@@ -6,7 +9,8 @@ from core.models import User
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "password"]
+        fields = ["email", "password", "passage_id"]
+        read_only_fields = ["passage_id"]
         depth = 1
 
     def create(self, validated_data):
