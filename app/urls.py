@@ -9,7 +9,7 @@ from drf_spectacular.views import (
 )
 from rest_framework.routers import DefaultRouter
 
-from core.views import UserViewSet, UserAiQuestionViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet
+from core.views import UserViewSet, UserAiQuestionViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet, ImageGenerationViewSet
 from uploader.views import ImageUploadViewSet
 
 
@@ -22,6 +22,7 @@ router.register(r'feed', FeedViewSet, basename='feed')
 router.register(r'views', ViewViewSet, basename='views')
 router.register(r'likes', LikeViewSet, basename='likes')
 router.register(r'saves', SaveViewSet, basename='saves')
+router.register(r'ai', ImageGenerationViewSet, basename='image-generation')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -1,5 +1,5 @@
 from celery import shared_task
-from core.models import UserAiQuestion, Feed
+from core.models import UserAiQuestion
 from core.services import PotasKwenAi, PotasImageAI
 import requests
 

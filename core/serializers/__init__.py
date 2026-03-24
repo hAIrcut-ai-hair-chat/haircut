@@ -1,3 +1,4 @@
 from .user import UserSerializer
 from .ai import UserAiQuestionSerializer, UserImageAiQuestionSerializer, AskAiSerializer
-from core.serializers.feed import FeedSerializer, ViewSerializer, LikeSerializer, SaveSerializer
+from .feed import FeedSerializer, ViewSerializer, LikeSerializer, SaveSerializer
+from .image_generation import ImageGenerationSerializer

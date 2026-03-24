@@ -10,11 +10,9 @@ class FeedSerializer(serializers.ModelSerializer):
         read_only_fields = ["uuid", "created_at"]
 
     def get_image(self, obj):
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(obj.image.url)
-        return obj.image.url
-        
+        print(obj.url)
+        file = obj.image.file
+        return file
 class ViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Views

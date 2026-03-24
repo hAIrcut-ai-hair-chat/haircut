@@ -18,7 +18,7 @@ class PotasImageAI:
 
         try:
             response = requests.post(
-                f"{self.base_url}/generate-image",
+                f"{self.base_url}/generate",
                 headers=self.headers,
                 json=payload,
                 timeout=30
