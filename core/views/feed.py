@@ -1,5 +1,5 @@
 from core.models import Feed, Views, Like, Save
-from core.serializers import FeedSerializer, ViewSerializer, LikeSerializer, SaveSerializer
+from core.serializers import FeedSerializer, ViewSerializer, LikeSerializer, SaveSerializer, ListFeedSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,7 +7,12 @@ from rest_framework.response import Response
 
 class FeedViewSet(ModelViewSet):
     queryset = Feed.objects.all()
-    serializer_class = FeedSerializer    
+    serializer_class = FeedSerializer   
+
+    def get_serializer_class(self):
+        if self.action == "list" or self.action == "retrieve":
+            return ListFeedSerializer
+        return FeedSerializer   
 
 class ViewViewSet(ModelViewSet):
     queryset = Views.objects.all()
