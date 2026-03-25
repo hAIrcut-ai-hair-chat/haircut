@@ -5,6 +5,7 @@ from uploader.models import Image
 
 
 class ImageUploadSerializer(serializers.ModelSerializer):
+    file = serializers.ImageField(required=True)
     class Meta:
         model = Image
         fields = ["attachment_key", "file", "description", "uploaded_on", "url"]
@@ -21,8 +22,8 @@ class ImageUploadSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["url", "description", "uploaded_on"]
-        read_only_fields = ["url", "attachment_key", "uploaded_on"]
+        fields = ["file", "description", "uploaded_on", "attachment_key"]
+        read_only_fields = ["attachment_key", "uploaded_on"]
 
     def create(self, validated_data):
         raise NotImplementedError("Use ImageUploadSerializer to create images.")

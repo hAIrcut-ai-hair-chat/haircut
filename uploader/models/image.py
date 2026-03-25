@@ -1,14 +1,12 @@
-import mimetypes
+from email.mime import image
 import uuid
-
+from cloudinary.models import CloudinaryField
 from django.db import models
 
 
-def image_file_path(image, _) -> str:
-    extension: str = mimetypes.guess_extension(image.file.file.content_type)
-    if extension == ".jpe":
-        extension = ".jpg"
-    return f"images/{image.public_id}{extension or ''}"
+def image_file_path(instance, filename) -> str:
+    """Legacy upload path helper for existing migrations."""
+    return f"media/images/{filename}"
 
 
 class Image(models.Model):
@@ -27,7 +25,7 @@ class Image(models.Model):
             "Should not be readable until the image is attached to another object."
         ),
     )
-    file = models.ImageField(upload_to=image_file_path)
+    file = CloudinaryField('image', folder="images/")
     description = models.CharField(max_length=255, blank=True)
     uploaded_on = models.DateTimeField(auto_now_add=True)
 
