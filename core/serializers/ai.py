@@ -10,6 +10,7 @@ class UserImageAiQuestionSerializer(ModelSerializer):
     class Meta:
         model = UserImageAiQuestion
         fields = ["user_ai_question_uuid", "image"]
+
 class UserAiQuestionSerializer(ModelSerializer):
     image = ImageField(write_only=True, required=True)
     images = UserImageAiQuestionSerializer(many=True, read_only=True)

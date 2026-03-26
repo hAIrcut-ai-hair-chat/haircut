@@ -9,7 +9,7 @@ from core.models import User
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "password", "passage_id"]
+        fields = ["email", "password", "passage_id", "name"]
         read_only_fields = ["passage_id"]
         depth = 1
 
