@@ -2,7 +2,7 @@ from celery import shared_task
 from core.models import UserAiQuestion
 from core.services import PotasKwenAi, PotasImageAI
 import requests
-
+from core.services import ParaFAl
 
 @shared_task(autoretry_for=(Exception,), retry_backoff=5, retry_kwargs={"max_retries": 3})
 def celeryAiChat(prompt: str, question_uuid: str):
@@ -22,8 +22,10 @@ def celeryAiChat(prompt: str, question_uuid: str):
     return {"uuid": str(question_uuid), "ai_response": response_text}
 
 @shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
-def celeryAiImage(prompt: str, image_b64: str):
-    return PotasImageAI().image(prompt=prompt, image_b64=image_b64)
+def celeryAiImage(prompt: str):
+    fal = ParaFAl()
+    image = fal.generate_image(prompt=prompt)
+    return image
 
 @shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def celeryAiFeed(image_b64: str):

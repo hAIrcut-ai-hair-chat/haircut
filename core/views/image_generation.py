@@ -10,11 +10,17 @@ class ImageGenerationViewSet(ModelViewSet):
     queryset = ImageGeneration.objects.all()
     serializer_class = ImageGenerationSerializer
 
-    @action(detail=True, methods=['post'])
-    def image_generate(self, request, pk=None):
-        instance = self.get_object()
-        prompt = instance.prompt
+    @action(detail=False, methods=["post"])
+    def generate(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        celeryAiImage.delay(prompt=prompt, image_generation_uuid=str(instance.uuid))
-
-        return Response({"detail": "Image generation started."}, status=status.HTTP_202_ACCEPTED)
+        prompt = serializer.validated_data.get("prompt")
+        image = celeryAiImage.delay(prompt=prompt).get()
+        if image:
+            serializer.save(image_url=image)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"detail": "Failed to generate image."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+                
