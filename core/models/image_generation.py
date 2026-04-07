@@ -13,7 +13,7 @@ class ImageGeneration(models.Model):
         LIKE = 'like', 'Like'
         DISLIKE = 'dislike', 'Dislike'
         NEUTRAL = 'neutral', 'Neutral'
-    feedback = models.CharField(max_length=10, choices=Feedback.choices, default=Feedback.NEUTRAL)
+    feedback = models.CharField(max_length=10, choices=Feedback.choices, default=Feedback.NEUTRAL, null=True, blank=True)
     
     def __str__(self):
         return self.prompt 
