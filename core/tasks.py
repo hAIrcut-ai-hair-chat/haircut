@@ -31,6 +31,7 @@ def celeryAiChat(prompt: str, question_uuid: str):
 
 @shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def celeryAiImage(prompt: str):
+    print("Oi amigo")
     try:
         logger.info(f"Starting image generation for prompt: {prompt[:50]}...")
         
@@ -69,8 +70,8 @@ def celeryAiImage(prompt: str):
         try:
             image_obj = Image.objects.create(description=f"Generated from prompt: {prompt}")
             image_obj.file.save(filename, image_content, save=True)
-            logger.info(f"Image saved successfully with UUID: {image_obj.uuid}")
-            return image_obj.uuid
+            logger.info(f"Image saved successfully with public_id: {image_obj.public_id}")
+            return str(image_obj.public_id)
         except Exception as e:
             logger.error(f"Error saving image to database: {str(e)}")
             raise Exception(f"Failed to save image: {str(e)}") from e

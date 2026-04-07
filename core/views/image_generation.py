@@ -16,11 +16,16 @@ class ImageGenerationViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        print(serializer.validated_data)  
         prompt = serializer.validated_data.get("prompt")
-        image_uuid = celeryAiImage.delay(prompt=prompt).get()
-        if image_uuid:
-            try:
-                image_obj = Image.objects.get(uuid=image_uuid)
+
+        task_result = celeryAiImage.delay(prompt=prompt)
+        print(task_result)       
+        try:
+            image_uuid = task_result.get(timeout=300) 
+            
+            if image_uuid:
+                image_obj = Image.objects.get(public_id=image_uuid)
                 image_generation = ImageGeneration.objects.create(
                     author=request.user,
                     prompt=prompt,
@@ -28,9 +33,11 @@ class ImageGenerationViewSet(ModelViewSet):
                 )
                 serializer = self.get_serializer(image_generation, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            except Image.DoesNotExist:
-                return Response({"detail": "Image not found."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            return Response({"detail": "Failed to generate image."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                return Response({"detail": "Failed to generate image."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Image.DoesNotExist:
+            return Response({"detail": "Image not found."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({"detail": f"Error generating image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
                 
