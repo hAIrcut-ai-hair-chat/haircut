@@ -135,14 +135,6 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 HF_AI_MODEL = os.getenv("HF_AI_MODEL")
 HF_BASE_URL = os.getenv("HF_BASE_URL")
 
-VECTOR_STORE_CONFIG = {
-    'PERSIST_DIRECTORY': os.path.join(BASE_DIR, 'vector_store'),
-    'CHROMA_COLLECTION_NAME': 'rag_documents',
-    'CHUNK_SIZE': int(os.getenv('CHUNK_SIZE', 1000)),
-    'CHUNK_OVERLAP': int(os.getenv('CHUNK_OVERLAP', 200)),
-    'SEARCH_K': int(os.getenv('SEARCH_K', 4)),
-    'SCORE_THRESHOLD': float(os.getenv('SCORE_THRESHOLD', 0.5)),
-}
 
 DOCUMENT_CONFIG = {
     'SUPPORTED_FORMATS': ['pdf', 'txt', 'csv', 'md', 'html'],
