@@ -10,6 +10,7 @@ import mimetypes
 import logging
 from urllib.error import URLError, HTTPError
 
+
 logger = logging.getLogger(__name__)
 
 @shared_task(autoretry_for=(Exception,), retry_backoff=5, retry_kwargs={"max_retries": 3})
@@ -88,4 +89,20 @@ def celeryAiFeed(image_b64: str):
         raise ValueError("Invalid image data")
 
     
-    
+@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
+def celeryUploaderImage(image: str):
+    if not image:
+        raise ValueError("Invalid image data")
+    try:
+        image_content = ContentFile(urlopen(image).read())
+        mime_type, _ = mimetypes.guess_type(image)
+        extension = mimetypes.guess_extension(mime_type) if mime_type else '.jpg'
+        filename = f"uploaded_{int(__import__('time').time())}{extension}"
+        
+        image_obj = Image.objects.create(description=f"Uploaded image from URL: {image}")
+        image_obj.file.save(filename, image_content, save=True)
+        return str(image_obj.public_id)
+    except Exception as e:
+        logger.error(f"Error uploading image: {str(e)}")
+        raise Exception(f"Failed to upload image: {str(e)}") from e 
+
