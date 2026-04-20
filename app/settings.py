@@ -22,7 +22,12 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOW_ALL_ORIGINS = [
+    "https://haircut-frontend-ppnf.vercel.app/",
+    "http://localhost:3000",    
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
