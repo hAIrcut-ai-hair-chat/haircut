@@ -20,9 +20,10 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
+    'https://haircut-frontend-ppnf.vercel.app/',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_ALL_ORIGINS = [
     "https://haircut-frontend-ppnf.vercel.app/",
