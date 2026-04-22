@@ -1,6 +1,3 @@
-from dill import logger
-from httpx import request
-
 from core.models import Feed, Views, Like, Save
 from core.serializers import FeedSerializer, ViewSerializer, LikeSerializer, SaveSerializer, ListFeedSerializer
 from rest_framework.viewsets import ModelViewSet
