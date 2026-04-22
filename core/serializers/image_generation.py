@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from sympy import O
 from core.models import ImageGeneration
 from uploader.models import Image
 
