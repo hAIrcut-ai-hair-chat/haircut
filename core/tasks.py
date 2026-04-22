@@ -2,7 +2,7 @@ from celery import shared_task
 from core.models import UserAiQuestion
 from core.services import PotasKwenAi, PotasImageAI
 import requests
-from core.services import ParaFal
+#from core.services import ParaFal
 from uploader.models import Image
 from django.core.files.base import ContentFile
 from urllib.request import urlopen
@@ -30,7 +30,7 @@ def celeryAiChat(prompt: str, question_uuid: str):
     
     return {"uuid": str(question_uuid), "ai_response": response_text}
 
-@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
+"""@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def celeryAiImage(prompt: str):
     print("Oi amigo")
     try:
@@ -80,7 +80,7 @@ def celeryAiImage(prompt: str):
     except Exception as e:
         logger.error(f"Image generation task failed: {str(e)}")
         raise
-
+"""
 @shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def celeryAiFeed(image_b64: str):
     image = image_b64.split(",")[1] if "," in image_b64 else image_b64
