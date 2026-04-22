@@ -1,7 +1,6 @@
 import logging
 from channels.consumer import AsyncConsumer, database_sync_to_async
 
-from app.settings import DATABASES
 
 class RoomConsumer(AsyncConsumer):
     async def websocker_connect(self, event):
