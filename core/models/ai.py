@@ -1,10 +1,8 @@
-from pyexpat import model
-from tkinter.tix import AUTO
-from turtle import mode
 from django.db import models
 from core.models import User
 import uuid
 from uploader.models.image import Image
+
 class UserAiQuestion(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, primary_key=True, auto_created=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
