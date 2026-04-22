@@ -9,14 +9,14 @@ class UserImageAiQuestionSerializer(ModelSerializer):
     )
     class Meta:
         model = UserImageAiQuestion
-        fields = ["user_ai_question_uuid", "image"]
+        fields = ["user_ai_question_uuid", "image", "room"]
 
 class UserAiQuestionSerializer(ModelSerializer):
     image = ImageField(write_only=True, required=True)
     images = UserImageAiQuestionSerializer(many=True, read_only=True)
     class Meta:
         model = UserAiQuestion
-        fields = ["uuid", "question", "image", "user", "response", "images"]
+        fields = ["uuid", "question", "image", "user", "response", "images", "room"]
         read_only_fields = ["uuid"]   
         
     def create(self, validated_data):
