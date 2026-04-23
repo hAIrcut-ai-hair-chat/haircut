@@ -16,7 +16,7 @@ from core.serializers import (
     UserAiQuestionSerializer,
     UserImageAiQuestionSerializer,
 )
-from core.tasks import celeryAiImage, celeryAiChat
+from core.tasks import celeryAiChat
 
 
 class UserAiQuestionViewSet(ModelViewSet):
