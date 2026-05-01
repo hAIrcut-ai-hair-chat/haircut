@@ -21,13 +21,17 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
     'https://haircut-frontend-ppnf.vercel.app/',
+    'http://localhost:5173',
+
+    
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_ORIGINS = [
     "https://haircut-frontend-ppnf.vercel.app/",
-    "http://localhost:3000",    
+    "http://localhost:3000",   
+    "http://localhost:5173",
 ]
 
 INSTALLED_APPS = [
@@ -46,7 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'core',
     'uploader',
-    'celery'
+    'channels',
+
 ]
 
 MIDDLEWARE = [

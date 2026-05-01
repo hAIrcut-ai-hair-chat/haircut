@@ -1,113 +1,98 @@
+[project]
 name = "haircut"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
-    {name = "user.name: kauabarros-25", email = "user.mail: martinsbarroskaua@gmail.com"},
+    {name = "kauabarros-25", email = "martinsbarroskaua@gmail.com"},
 ]
 dependencies = [
-    "annotated-types==0.7.0",
     "asgiref==3.8.1",
-    "astroid==3.3.9",
-    "asttokens==3.0.0",
     "attrs==24.2.0",
-    "brotli==1.1.0",
     "certifi==2024.8.30",
-    "cffi==1.17.1; platform_python_implementation != \"PyPy\"",
-    "cfgv==3.4.0",
+    "cffi==1.17.1; platform_python_implementation != 'PyPy'",
     "charset-normalizer==3.4.0",
     "click==8.1.7",
-    "cloudinary==1.41.0",
-    "colorama==0.4.6; sys_platform == \"win32\" or platform_system == \"Windows\"",
+    "cloudinary==1.44.1",
+    "colorama==0.4.6; sys_platform == 'win32' or platform_system == 'Windows'",
     "cryptography==44.0.2",
-    "decorator==5.2.1",
-    "dill==0.3.9",
-    "distlib==0.3.9",
     "dj-database-url==2.3.0",
     "django==5.1.7",
     "django-cloudinary-storage==0.3.0",
-    "django-cors-headers==4.7.0",
-    "django-extensions==3.2.3",
-    "django-filter==25.1",
+    "django-cors-headers==4.9.0",
+    "django-extensions==4.1",
+    "django-filter==25.2",
     "djangorestframework==3.15.2",
-    "drf-spectacular==0.28.0",
-    "exceptiongroup==1.2.2; python_version < \"3.11\"",
-    "executing==2.2.0",
-    "filelock==3.16.1",
-    "gunicorn==23.0.0",
+    "drf-spectacular==0.29.0",
+    "gunicorn==25.3.0",
     "h11==0.14.0",
-    "identify==2.6.1",
     "idna==3.10",
     "inflection==0.5.1",
-    "ipython==8.34.0",
-    "isort==6.0.1",
-    "jedi==0.19.2",
     "jsonschema==4.23.0",
     "jsonschema-specifications==2024.10.1",
     "langchain>=1.2.7",
     "langchain-google-genai>=4.2.0",
-    "matplotlib-inline==0.1.7",
-    "mccabe==0.7.0",
     "netifaces==0.11.0",
-    "nodeenv==1.9.1",
     "packaging==24.1",
-    "parso==0.8.4",
-    "passage-identity==3.0.1",
-    "pexpect==4.9.0; sys_platform != \"win32\" and sys_platform != \"emscripten\"",
-    "Pillow==11.1.0",
-    "platformdirs==4.3.6",
-    "pre-commit==4.2.0",
-    "prompt-toolkit==3.0.50",
+    "Pillow==12.1.1",
     "psycopg2-binary==2.9.10",
-    "ptyprocess==0.7.0; sys_platform != \"win32\" and sys_platform != \"emscripten\"",
-    "pure-eval==0.2.3",
-    "pycparser==2.22; platform_python_implementation != \"PyPy\"",
     "pydantic==2.10.6",
     "pydantic-core==2.27.2",
     "pydotplus==2.0.2",
-    "pygments==2.19.1",
     "pyjwt==2.9.0",
-    "pylint==3.3.6",
     "pyparsing==3.2.0",
     "python-dateutil==2.9.0.post0",
     "python-dotenv==1.2.0",
-    "python-magic==0.4.27; sys_platform == \"linux\"",
-    "python-magic-bin==0.4.14; sys_platform == \"win32\"",
+    "python-magic==0.4.27; sys_platform == 'linux'",
+    "python-magic-bin==0.4.14; sys_platform == 'win32'",
     "pyyaml==6.0.2",
     "referencing==0.35.1",
     "requests==2.32.3",
     "rpds-py==0.20.1",
-    "ruff==0.11.2",
-    "setuptools==78.0.2",
     "six==1.16.0",
     "sqlparse==0.5.1",
-    "stack-data==0.6.3",
-    "tiktoken>=0.12.0",
-    "tomli==2.0.2; python_version < \"3.11\"",
-    "tomlkit==0.13.2",
-    "traitlets==5.14.3",
     "typing-extensions==4.12.2",
-    "tzdata==2024.2; sys_platform == \"win32\"",
+    "tzdata==2024.2; sys_platform == 'win32'",
     "uritemplate==4.1.1",
     "urllib3==2.0.7",
-    "uvicorn==0.34.0",
-    "virtualenv==20.27.1",
-    "wcwidth==0.2.13",
-    "whitenoise[brotli]==6.9.0",
+    "whitenoise[brotli]==6.12.0",
+    "celery>=5.6.3",
+    "redis>=7.4.0",
+    "django-celery-results>=2.6.0",
+    "flower>=2.0.1",
+    "channels>=4.3.2",
+    "channels-redis>=4.3.0",
+    "uvicorn>=0.46.0",
+    "daphne>=4.2.1",
+    "fal>=0.12.1",
+    "fal-client>=0.13.2",
     "chromadb>=1.4.1",
     "pypdf>=6.6.2",
     "google-generativeai>=0.8.6",
+    "tiktoken>=0.12.0",
 ]
-
-requires-python = "==3.12.*"
-license = { text = "MIT" }
+requires-python = ">=3.12"
 readme = "README.md"
+license = { text = "MIT" }
 
 [dependency-groups]
 dev = [
-  "pylint>=3.0.2",
-  "ipython>=8.26.0",
-  "ruff>=0.11.2",
+    "pylint>=3.0.2",
+    "ipython>=8.26.0",
+    "ruff>=0.11.2",
+    "pre-commit>=4.2.0",
+    "isort>=6.0.1",
 ]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[[tool.pdm.autoexport]]
+filename = "requirements.txt"
+without-hashes = "true"
 
 [tool.pdm.scripts]
 pre_dev = "python3 ./scripts/set_my_ip.py"
@@ -132,16 +117,7 @@ celery = "celery -A core worker -l info"
 flower = "celery -A core flower --port=5555"
 uvicorn = "python3 -m uvicorn app.asgi:application --host 0.0.0.0 --port 8080 --reload"
 daphne = "daphne -b 127.0.0.1 -p 19003 app.asgi:application"
-start = {composite = ["dev", "daphne"]}
-
-
-
-[tool.pdm]
-distribution = true
-
-[[tool.pdm.autoexport]]
-filename = "requirements.txt"
-without-hashes = "true"
+start = { composite = ["dev", "daphne"] }
 
 [tool.ruff]
 line-length = 120
@@ -155,19 +131,3 @@ ignore = ["PLR6301"]
 [tool.ruff.format]
 preview = true
 quote-style = 'single'
-
-[project]
-name = "haircut"
-version = "0.1.0"
-description = "Default template for PDM package"
-authors = [
-    {name = "user.name: kauabarros-25", email = "user.mail: martinsbarroskaua@gmail.com"},
-]
-dependencies = ["dotenv>=0.9.9", "celery>=5.6.3", "redis>=7.4.0", "django-celery-results>=2.6.0", "flower>=2.0.1", "django-database-url>=1.0.3", "cloudinary>=1.44.1", "django-cloudinary-storage>=0.3.0", "django-cors-headers>=4.9.0", "django-extensions>=4.1", "django-filter>=25.2", "drf-spectacular>=0.29.0", "python-magic>=0.4.27", "pillow>=12.1.1", "whitenoise>=6.12.0", "fal>=0.12.1", "fal-client>=0.13.2", "channels>=4.3.2", "channels-redis>=4.3.0", "uvicorn>=0.46.0", "gunicorn>=25.3.0"]
-requires-python = ">=3.12"
-readme = "README.md"
-license = {text = "MIT"}
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"

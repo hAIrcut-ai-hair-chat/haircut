@@ -1,18 +1,15 @@
 from django.conf import settings
+from isolate_proto import USER
+from core.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from drf_spectacular.plumbing import build_bearer_security_scheme_object
-from passageidentity import Passage, PassageError
-
-# from passageidentity.openapi_client.models import UserInfo
 from rest_framework import authentication
 from rest_framework.exceptions import AuthenticationFailed
+import jwt
 
-from core.models import User
-
-PASSAGE_APP_ID = settings.PASSAGE_APP_ID
-PASSAGE_API_KEY = settings.PASSAGE_API_KEY
-psg = Passage(PASSAGE_APP_ID, PASSAGE_API_KEY)
+JWT_SECRET_KEY = getattr(settings, 'JWT_SECRET_KEY', settings.SECRET_KEY)
+JWT_ALGORITHM = 'HS256'
 
 
 class TokenAuthenticationScheme(OpenApiAuthenticationExtension):
@@ -29,33 +26,44 @@ class TokenAuthenticationScheme(OpenApiAuthenticationExtension):
 
 
 class TokenAuthentication(authentication.BaseAuthentication):
-    def authenticate(self, request) -> tuple[User, None]:
-        if not request.headers.get('Authorization'):
+    def authenticate(self, request):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
             return None
 
-        token = request.headers.get('Authorization').split()[1]
-        psg_user_id: str = self._get_user_id(token)
-        user: User = self._get_or_create_user(psg_user_id)
+        try:
+            prefix, token = auth_header.split()
+            if prefix.lower() != 'bearer':
+                raise AuthenticationFailed('Formato inválido. Use Bearer <token>')
+        except ValueError:
+            raise AuthenticationFailed('Cabeçalho Authorization mal formatado')
+
+        payload = self._decode_jwt(token)
+
+        user = self._get_or_create_user(payload)
 
         return (user, None)
 
-    def _get_or_create_user(self, psg_user_id) -> User:
+    def _decode_jwt(self, token):
         try:
-            user: User = User.objects.get(passage_id=psg_user_id)
-        except ObjectDoesNotExist:
-            psg_user = psg.user.get(psg_user_id)
-            user: User = User.objects.create_user(
-                passage_id=psg_user.id,
-                email=psg_user.email,
+            payload = jwt.decode(
+                token,
+                JWT_SECRET_KEY,
+                algorithms=[JWT_ALGORITHM]
             )
+            if 'user_id' not in payload:
+                raise AuthenticationFailed('Token não contém user_id')
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token expirado')
+        except jwt.InvalidTokenError as e:
+            raise AuthenticationFailed(f'Token inválido: {str(e)}')
+
+    def _get_or_create_user(self, payload):
+        user_id = payload['user_id']
+        try:
+            user = User.objects.get(pk=user_id)
+        except ObjectDoesNotExist:  
+            raise AuthenticationFailed('Usuário não encontrado')
 
         return user
-
-    def _get_user_id(self, token) -> str:
-        try:
-            psg_user_id: str = psg.auth.validate_jwt(token)
-        except PassageError as e:
-            # print(e)
-            raise AuthenticationFailed(e.message) from e
-
-        return psg_user_id
