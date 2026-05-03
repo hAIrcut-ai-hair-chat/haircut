@@ -20,19 +20,11 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
-    'https://haircut-frontend-ppnf.vercel.app/',
+    'https://haircut-frontend-ppnf.vercel.app',
     'http://localhost:5173',
-
-    
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOW_ORIGINS = [
-    "https://haircut-frontend-ppnf.vercel.app/",
-    "http://localhost:3000",   
-    "http://localhost:5173",
-]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,10 +40,10 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'rest_framework',
+    'rest_framework_simplejwt',
     'core',
     'uploader',
     'channels',
-
 ]
 
 MIDDLEWARE = [
@@ -85,6 +77,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'app.wsgi.application'
+ASGI_APPLICATION = 'app.asgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -107,10 +100,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 FAL_API_KEY = os.getenv('FAL_API_KEY')
-
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
@@ -132,6 +123,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'app.pagination.CustomPagination',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 SPECTACULAR_SETTINGS = {
@@ -146,7 +140,6 @@ PASSAGE_API_KEY = os.getenv('PASSAGE_API_KEY', 'api_key')
 HF_TOKEN = os.getenv("HF_TOKEN")
 HF_AI_MODEL = os.getenv("HF_AI_MODEL")
 HF_BASE_URL = os.getenv("HF_BASE_URL")
-
 
 DOCUMENT_CONFIG = {
     'SUPPORTED_FORMATS': ['pdf', 'txt', 'csv', 'md', 'html'],

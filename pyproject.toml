@@ -4,73 +4,66 @@ version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
     {name = "kauabarros-25", email = "martinsbarroskaua@gmail.com"},
+    {name = "kauabarros-24", email = "martinsbarroskaua@gmail.com"},
 ]
+
 dependencies = [
-    "asgiref==3.8.1",
-    "attrs==24.2.0",
-    "certifi==2024.8.30",
-    "cffi==1.17.1; platform_python_implementation != 'PyPy'",
-    "charset-normalizer==3.4.0",
-    "click==8.1.7",
-    "cloudinary==1.44.1",
-    "colorama==0.4.6; sys_platform == 'win32' or platform_system == 'Windows'",
-    "cryptography==44.0.2",
-    "dj-database-url==2.3.0",
-    "django==5.1.7",
-    "django-cloudinary-storage==0.3.0",
-    "django-cors-headers==4.9.0",
-    "django-extensions==4.1",
-    "django-filter==25.2",
-    "djangorestframework==3.15.2",
-    "drf-spectacular==0.29.0",
-    "gunicorn==25.3.0",
-    "h11==0.14.0",
-    "idna==3.10",
-    "inflection==0.5.1",
-    "jsonschema==4.23.0",
-    "jsonschema-specifications==2024.10.1",
-    "langchain>=1.2.7",
-    "langchain-google-genai>=4.2.0",
-    "netifaces==0.11.0",
-    "packaging==24.1",
-    "Pillow==12.1.1",
+    # Core do Django e database
+    "asgiref==3.11.1",
+    "django==6.0.2",
     "psycopg2-binary==2.9.10",
-    "pydantic==2.10.6",
-    "pydantic-core==2.27.2",
-    "pydotplus==2.0.2",
-    "pyjwt==2.9.0",
-    "pyparsing==3.2.0",
-    "python-dateutil==2.9.0.post0",
-    "python-dotenv==1.2.0",
-    "python-magic==0.4.27; sys_platform == 'linux'",
-    "python-magic-bin==0.4.14; sys_platform == 'win32'",
-    "pyyaml==6.0.2",
-    "referencing==0.35.1",
-    "requests==2.32.3",
-    "rpds-py==0.20.1",
-    "six==1.16.0",
-    "sqlparse==0.5.1",
-    "typing-extensions==4.12.2",
-    "tzdata==2024.2; sys_platform == 'win32'",
-    "uritemplate==4.1.1",
-    "urllib3==2.0.7",
+    "dj-database-url==2.3.0",
     "whitenoise[brotli]==6.12.0",
+    "djangorestframework==3.17.0",
+    "django-filter==25.2",
+    "django-cors-headers==4.9.0",
+    "cloudinary==1.44.1",
+    "django-cloudinary-storage==0.3.0",
+    "pyjwt==2.12.1",
+    "python-dotenv==1.2.1",
+    "Pillow==12.1.1",
+    "requests==2.32.5",
+    "urllib3==2.6.3",
     "celery>=5.6.3",
     "redis>=7.4.0",
     "django-celery-results>=2.6.0",
-    "flower>=2.0.1",
     "channels>=4.3.2",
     "channels-redis>=4.3.0",
     "uvicorn>=0.46.0",
-    "daphne>=4.2.1",
-    "fal>=0.12.1",
-    "fal-client>=0.13.2",
-    "chromadb>=1.4.1",
-    "pypdf>=6.6.2",
+    "langchain>=1.2.7",
+    "langchain-google-genai>=4.2.0",
     "google-generativeai>=0.8.6",
     "tiktoken>=0.12.0",
+    "pypdf>=6.6.2",
+    "aiohttp==3.13.4",
+    "yarl==1.23.0",
+    "multidict==6.7.1",
+    "frozenlist==1.8.0",
+    "aiosignal==1.4.0",
+    "propcache==0.4.1",
+    "cryptography==46.0.6",
+    "cffi==2.0.0",
+    "pycparser==3.0; python_full_version >= '3.9' and platform_python_implementation != 'PyPy' and implementation_name != 'PyPy'",
+    "tzdata==2025.3",
+    "packaging==26.0",
+    "idna==3.11",
+    "certifi==2026.2.25",
+    "charset-normalizer==3.4.6",
+    "click==8.3.1",
+    "sqlparse==0.5.5",
+    "six==1.17.0",
+    "typing-extensions==4.15.0",
+
+    "python-magic-bin==0.4.14; sys_platform == 'win32'",
+    "colorama==0.4.6",
+    "pywin32==311; platform_system == 'Windows'",
+    "django-extensions>=4.1",
+    "drf-spectacular>=0.29.0",
+    "python-magic>=0.4.27",
+    "djangorestframework-simplejwt>=5.5.1",
 ]
-requires-python = ">=3.12"
+
+requires-python = "==3.12.*"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -83,12 +76,8 @@ dev = [
     "isort>=6.0.1",
 ]
 
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
-
 [tool.pdm]
-distribution = true
+distribution = false
 
 [[tool.pdm.autoexport]]
 filename = "requirements.txt"
