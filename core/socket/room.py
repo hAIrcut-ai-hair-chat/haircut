@@ -3,6 +3,7 @@ import logging
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from core.tasks import chatAI_teste
 
 from core.models import User, Room
 
@@ -95,7 +96,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
 
             await self.send(
                 text_data=json.dumps({
-                    "message": message
+                    "message": chatAI_teste()
                 })
             )
 

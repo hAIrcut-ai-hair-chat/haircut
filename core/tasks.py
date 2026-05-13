@@ -3,6 +3,7 @@ from core.models import UserAiQuestion
 from core.services import PotasKwenAi, PotasImageAI
 import requests
 #from core.services import ParaFal
+from core.services.mock import ChatAi
 from uploader.models import Image
 from django.core.files.base import ContentFile
 from urllib.request import urlopen
@@ -106,3 +107,8 @@ def celeryUploaderImage(image: str):
         logger.error(f"Error uploading image: {str(e)}")
         raise Exception(f"Failed to upload image: {str(e)}") from e 
 
+@shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
+def chatAI_teste():
+    chat_ai = ChatAi()
+    instance = chat_ai.ai_response
+    return instance
