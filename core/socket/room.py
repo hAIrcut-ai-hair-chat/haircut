@@ -3,10 +3,10 @@ import logging
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from core.tasks import chatAI_teste
-
+#from core.tasks import chatAI_teste
 from core.models import User, Room
-
+from channels.middleware import BaseMiddleware
+from rest_framework_simplejwt.tokens import AccessToken
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +96,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
 
             await self.send(
                 text_data=json.dumps({
-                    "message": chatAI_teste()
+                    "message": "Olá tudo bem!"
                 })
             )
 
