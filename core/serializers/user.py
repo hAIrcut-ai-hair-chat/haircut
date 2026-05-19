@@ -1,6 +1,8 @@
-from os import read
+from os import read, write
 from pickletools import read_long1
 
+from charset_normalizer.constant import TRACE
+from redis.exceptions import TryAgainError
 from rest_framework.serializers import ModelSerializer
 
 from core.models import User
@@ -9,8 +11,18 @@ from core.models import User
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "password"]
+        fields = ["email", "password", "passage_id"]
         depth = 1
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+            'passage_id': {
+                'required': False,
+                'allow_null': True,
+                'allow_blank': True
+            }
+        }
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

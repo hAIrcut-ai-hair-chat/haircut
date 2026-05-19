@@ -6,7 +6,7 @@ class PotasImageAI:
         self.base_url = settings.HF_BASE_URL
         self.token = settings.HF_TOKEN
         self.headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self.token}",            
             "Content-Type": "application/json"
         }
 
