@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>HairCut · Confirmação de agendamento | DeepSeek Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #eef2ff 0%, #d9e6f5 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* card com estilo clean azul/branco - DeepSeek vibes */
+        .card {
+            max-width: 540px;
+            width: 100%;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 40px 36px;
+            border: 1px solid rgba(30, 64, 175, 0.15);
+            box-shadow: 0 25px 40px -12px rgba(0, 45, 80, 0.25), 0 2px 6px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease;
+            position: relative;
+        }
+
+        /* detalhe azul inspirado na marca */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 5%;
+            width: 90%;
+            height: 4px;
+            background: linear-gradient(90deg, #2563eb, #38bdf8, #1e40af);
+            border-radius: 4px;
+            transform: translateY(-2px);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* ícone com fundo azul claro e tesoura branca/azul */
+        .icon {
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2ff;
+            border-radius: 24px;
+            color: #1e3a8a;
+            box-shadow: 0 6px 14px rgba(30, 64, 175, 0.1);
+        }
+
+        .icon svg {
+            width: 30px;
+            height: 30px;
+            color: #1e40af;
+        }
+
+        h1 {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #0b2b4f, #1e4a8a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .subtitulo {
+            font-size: 15px;
+            color: #3b82f6;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            margin-top: -6px;
+            margin-bottom: 18px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+        }
+
+        p {
+            color: #1f2a44;
+            font-size: 15.5px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            font-weight: 450;
+        }
+
+        .highlight-text {
+            background: #f0f7ff;
+            padding: 12px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #0f3b6f;
+            margin: 20px 0 18px 0;
+            border-left: 4px solid #3b82f6;
+            font-weight: 500;
+        }
+
+        /* container do código - fundo branco com borda azul sutil */
+        .code-container {
+            display: flex;
+            justify-content: center;
+            margin: 28px 0 20px;
+        }
+
+        .code {
+            background: #ffffff;
+            color: #0b2b4f;
+            padding: 20px 32px;
+            border-radius: 32px;
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: 10px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            border: 2px solid #bfdbfe;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08);
+            text-align: center;
+            background: linear-gradient(145deg, #ffffff, #f8fcff);
+        }
+
+        /* botão principal com azul vibrante DeepSeek */
+        .button {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: white !important;
+            padding: 16px 20px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 32px;
+            background: linear-gradient(105deg, #1e3a8a, #2563eb, #3b82f6);
+            box-shadow: 0 12px 20px -8px rgba(37, 99, 235, 0.45);
+            transition: all 0.25s ease;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(105deg, #1e40af, #3b82f6, #60a5fa);
+            box-shadow: 0 18px 28px -10px rgba(37, 99, 235, 0.6);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .footer-note {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: #4b6a9b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 22px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-note span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-note svg {
+            width: 14px;
+            height: 14px;
+            fill: #3b82f6;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 30px 24px;
+            }
+            .code {
+                font-size: 26px;
+                letter-spacing: 6px;
+                padding: 14px 20px;
+            }
+            h1 {
+                font-size: 30px;
+            }
+            .icon {
+                width: 48px;
+                height: 48px;
+            }
+            .icon svg {
+                width: 26px;
+                height: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="title">
+        <div class="icon">
+            <!-- Ícone de tesoura/estilo barbearia em azul -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9.8,12L4.2,6.4l1.4-1.4L12,11.2l6.4-6.4l1.4,1.4L14.2,12l5.6,5.6l-1.4,1.4L12,12.8l-6.4,6.4l-1.4-1.4L9.8,12z"/>
+                <circle cx="18" cy="5" r="2" fill="currentColor"/>
+                <circle cx="6" cy="19" r="2" fill="currentColor"/>
+            </svg>
+        </div>
+        <h1>HairCut</h1>
+    </div>
+    <div class="subtitulo">✂️ barbearia · estilo & confiança</div>
+
+    <p>
+        Olá, cliente! <br><br>
+        Recebemos sua solicitação de <strong>agendamento na HairCut</strong> com segurança DeepSeek.  
+        Para confirmar seu horário e garantir um corte impecável, utilize o código de verificação abaixo.
+    </p>
+
+    <div class="highlight-text">
+        🔐 Este código é pessoal, válido por 30 minutos e protegido com criptografia azul. Não compartilhe.
+    </div>
+
+    <div class="code-container">
+        <div class="code">
+            {{ code }}
+        </div>
+    </div>
+
+    <a href="{{ url }}" class="button">
+        ✂️ CONFIRMAR AGENDAMENTO ✂️
+    </a>
+
+    <div class="footer-note">
+        <span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            Agendamento seguro
+        </span>
+        <span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z"/>
+            </svg>
+            Expira rapidamente
+        </span>
+        <span>🧢 HairCut · powered by DeepSeek</span>
+    </div>
+</div>
+</body>
+</html>
