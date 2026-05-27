@@ -1,3 +1,5 @@
+import code
+
 from celery import shared_task
 from core.models import UserAiQuestion
 from core.services import PotasKwenAi, PotasImageAI
@@ -120,8 +122,7 @@ def chatAI_teste():
 @shared_task(autoretry_for=(requests.exceptions.Timeout, requests.exceptions.ConnectionError),retry_backoff=5, retry_kwargs={"max_retries": 3}, soft_time_limit=60)
 def send_email(email):
     context = {
-            "code": str(generate_code())
-            
+            "code": str(generate_code()) 
         }
 
     html_content = render_to_string(
@@ -142,3 +143,8 @@ def send_email(email):
         )
 
     send_email.send()  
+
+    return {
+        "code": context.get(code),
+        'status': True
+    }
