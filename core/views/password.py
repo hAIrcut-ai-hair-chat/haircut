@@ -1,3 +1,5 @@
+from hmac import new
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,6 +28,8 @@ class ForgetPasswordView(APIView):
             )
 
         new_email = send_email(email)
+        print(new_email.get('code'))
+            
 
         if new_email.get('status'):
 

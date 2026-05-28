@@ -145,6 +145,6 @@ def send_email(email):
     send_email.send()  
 
     return {
-        "code": context.get(code),
+        "code": context.get("code"),
         'status': True
     }
