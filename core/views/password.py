@@ -1,12 +1,10 @@
-from hmac import new
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from twisted.logger import LoggingFile
 from core.models import User, ForgetPassword
 from core.tasks import send_email
-
+import logging
 
 class ForgetPasswordView(APIView):
     def post(self, request):
@@ -54,7 +52,9 @@ class ForgetPasswordView(APIView):
             status=status.HTTP_200_OK
         )
 
-    def patch(self, request):
+
+class UpdatePasswordView(APIView):
+    def post(self, request):
         email = request.data.get('email')
         code = request.data.get('code')
         new_password = request.data.get('new_password')
@@ -63,11 +63,11 @@ class ForgetPasswordView(APIView):
             return Response(
                 data={"message": "Email, code and new_password are required"},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+        )
 
         try:
             user = User.objects.get(email=email)
-
+            
         except User.DoesNotExist:
             return Response(
                 data={"message": "User not found"},
