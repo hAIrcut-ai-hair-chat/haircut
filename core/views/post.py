@@ -1,5 +1,4 @@
 from django_filters.filters import QuerySetRequestMixin
-from langchain_google_genai.chat_models import _parse_response_candidate
 
 from core.serializers import PostSerializer, ListPostSerializer
 from core.models import Post

@@ -1,5 +1,4 @@
 from django.conf import settings
-from isolate_proto import USER
 from core.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
