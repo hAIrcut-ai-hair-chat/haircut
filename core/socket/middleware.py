@@ -1,9 +1,6 @@
-from encodings.idna import ace_prefix
-from os import access
 from urllib.parse import parse_qs
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
-from httpx import get
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import AnonymousUser
 

@@ -1,9 +1,14 @@
+import stat
+from xxlimited import new
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from twisted.logger import LoggingFile
+from twisted.logger import LoggingFile
 from core.models import User, ForgetPassword
 from core.tasks import send_email
+import logging
 import logging
 
 class ForgetPasswordView(APIView):
@@ -57,17 +62,21 @@ class UpdatePasswordView(APIView):
     def post(self, request):
         email = request.data.get('email')
         code = request.data.get('code')
-        new_password = request.data.get('new_password')
+        new_password = request.data.get('password')
+        print(email, code, new_password)
 
-        if not email or not code or not new_password:
-            return Response(
-                data={"message": "Email, code and new_password are required"},
-                status=status.HTTP_400_BAD_REQUEST
-        )
+        required_fields = {
+            "email": email,
+            "code": code,
+            "password": new_password
+        }
 
+        for key, value in required_fields.items():
+            if not value:
+                return Response({"message": f"{key} is required to redefine password"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(email=email)
-            
+            print(user)
         except User.DoesNotExist:
             return Response(
                 data={"message": "User not found"},
