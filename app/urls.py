@@ -7,7 +7,6 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from parso.tree import BaseNode
 from rest_framework.routers import DefaultRouter
 
 from core.views import UserViewSet, UserAiQuestionViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet, ImageGenerationViewSet, ForgetPasswordView, UpdatePasswordView
