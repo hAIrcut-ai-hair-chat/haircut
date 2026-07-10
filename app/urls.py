@@ -10,9 +10,7 @@ from drf_spectacular.views import (
 from parso.tree import BaseNode
 from rest_framework.routers import DefaultRouter
 
-<<<<<<< HEAD
 from core.views import UserViewSet, UserAiQuestionViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet, ImageGenerationViewSet, ForgetPasswordView, UpdatePasswordView
-=======
 from core.views import (
     UserViewSet, 
     UserAiQuestionViewSet, 
@@ -27,9 +25,7 @@ from core.views import (
     PostViewSet
 )
 
-from core.mock import MockAiViewSet
 
->>>>>>> 50e6254 (CHORE: refix)
 from uploader.views import ImageUploadViewSet
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -59,10 +55,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/password/code/', ForgetPasswordView.as_view(), name="forget_password"), 
     path('api/password/update/', UpdatePasswordView.as_view(), name="update_password"),
-<<<<<<< HEAD
-=======
-    path('api/ai/mock', MockAiViewSet.as_view(), name="mock_ai"),
->>>>>>> 50e6254 (CHORE: refix)
     path('api/', include(router.urls)),
 ]
 
