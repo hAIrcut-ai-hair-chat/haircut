@@ -11,19 +11,21 @@ from core.models import User
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "password", "passage_id"]
+        fields = ["email", "password"]
         depth = 1
         extra_kwargs = {
             'password': {
                 'write_only': True
             },
-            'passage_id': {
-                'required': False,
-                'allow_null': True,
-                'allow_blank': True
-            }
         }
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+    
+
+class AvatarSerializer():
+    class Meta:
+        model = User
+        fields  = ["avatar"]
+        

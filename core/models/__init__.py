@@ -4,3 +4,5 @@ from .image_generation import ImageGeneration
 from .feed import Feed, Views, Like, Save
 from .room import Room
 from .password import ForgetPassword
+from .post import Post
+from .think import Think

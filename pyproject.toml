@@ -109,7 +109,6 @@ flower = "celery -A core flower --port=5555"
 uvicorn = "python3 -m uvicorn app.asgi:application --host 0.0.0.0 --port 8080 --reload"
 daphne = "daphne -b 127.0.0.1 -p 19003 app.asgi:application"
 start = { composite = ["dev", "daphne"] }
-
 [tool.ruff]
 line-length = 120
 extend-exclude = ['migrations', '__init__.py', 'manage.py']
