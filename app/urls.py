@@ -9,10 +9,9 @@ from drf_spectacular.views import (
 )
 from rest_framework.routers import DefaultRouter
 
-from core.views import UserViewSet, UserAiQuestionViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet, ImageGenerationViewSet, ForgetPasswordView, UpdatePasswordView
+from core.views import UserViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet, ImageGenerationViewSet, ForgetPasswordView, UpdatePasswordView
 from core.views import (
-    UserViewSet, 
-    UserAiQuestionViewSet, 
+    UserViewSet,
     FeedViewSet, 
     ViewViewSet, 
     LikeViewSet, 
@@ -36,7 +35,6 @@ router = DefaultRouter()
 
 router.register(r"posts", PostViewSet, basename="posts")
 router.register(r"image", ImageUploadViewSet, basename="image")
-router.register(r"question", UserAiQuestionViewSet, basename="question")
 router.register(r'users', UserViewSet, basename='users')
 router.register(r'feed', FeedViewSet, basename='feed')
 router.register(r'views', ViewViewSet, basename='views')
