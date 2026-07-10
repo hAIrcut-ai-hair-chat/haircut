@@ -1,6 +1,7 @@
+from PIL import ImageDraw
 from rest_framework import serializers
 
-from uploader.helpers.files import CONTENT_TYPE_JPG, CONTENT_TYPE_PNG
+from uploader.helpers.files import images_type
 from uploader.models import Image
 
 
@@ -13,7 +14,7 @@ class ImageUploadSerializer(serializers.ModelSerializer):
         extra_kwargs = {"file": {"write_only": True}}
 
     def validate_file(self, value):
-        valid_content_types = [CONTENT_TYPE_JPG, CONTENT_TYPE_PNG]
+        valid_content_types = images_type
         if value.content_type not in valid_content_types:
             raise serializers.ValidationError("Invalid or corrupted image.")
         return value
@@ -22,7 +23,7 @@ class ImageUploadSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["file", "description", "uploaded_on", "attachment_key"]
+        fields = ["file", "description", "uploaded_on", "attachment_key"]   
         read_only_fields = ["attachment_key", "uploaded_on"]
 
     def create(self, validated_data):

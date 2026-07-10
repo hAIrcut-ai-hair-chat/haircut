@@ -7,9 +7,25 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from parso.tree import BaseNode
 from rest_framework.routers import DefaultRouter
 
-from core.views import UserViewSet, UserAiQuestionViewSet, FeedViewSet, ViewViewSet, LikeViewSet, SaveViewSet, ImageGenerationViewSet, ForgetPasswordView
+from core.views import (
+    UserViewSet, 
+    UserAiQuestionViewSet, 
+    FeedViewSet, 
+    ViewViewSet, 
+    LikeViewSet, 
+    SaveViewSet, 
+    ImageGenerationViewSet, 
+    ForgetPasswordView, 
+    UpdatePasswordView,
+    ThinkViewSet,
+    PostViewSet
+)
+
+from core.mock import MockAiViewSet
+
 from uploader.views import ImageUploadViewSet
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -19,13 +35,15 @@ from rest_framework_simplejwt.views import (
 
 router = DefaultRouter()
 
-router.register("image", ImageUploadViewSet, basename="image")
+router.register(r"posts", PostViewSet, basename="posts")
+router.register(r"image", ImageUploadViewSet, basename="image")
 router.register(r"question", UserAiQuestionViewSet, basename="question")
 router.register(r'users', UserViewSet, basename='users')
 router.register(r'feed', FeedViewSet, basename='feed')
 router.register(r'views', ViewViewSet, basename='views')
 router.register(r'likes', LikeViewSet, basename='likes')
 router.register(r'saves', SaveViewSet, basename='saves')
+router.register(r"think", ThinkViewSet, basename="thinks")
 router.register(r'ai', ImageGenerationViewSet, basename='image-generation')
 
 urlpatterns = [
@@ -36,6 +54,8 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/password/code/', ForgetPasswordView.as_view(), name="forget_password"), 
+    path('api/password/update/', UpdatePasswordView.as_view(), name="update_password"),
+    path('api/ai/mock', MockAiViewSet.as_view(), name="mock_ai"),
     path('api/', include(router.urls)),
 ]
 

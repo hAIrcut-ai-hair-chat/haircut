@@ -7,11 +7,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from core.models import User
 from core.serializers import UserSerializer
+from core.serializers.user import AvatarSerializer
 
 
 class UserViewSet(ModelViewSet):
-    queryset = User.objects.all().order_by('id')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
     @extend_schema(
         summary="Dados do usuário autenticado",
@@ -24,3 +26,6 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+   
+
+ 
