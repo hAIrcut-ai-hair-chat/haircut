@@ -169,8 +169,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000", 
     "http://localhost:5174",
-
-
+    
+    "https://vercel.com/kauabarros-24s-projects/frontend2repo/DsCkoNxdNfFqAvGQhViFZUC2u61i",
     "https://haircut-frontend-ppnf.vercel.app",
 ]
 
