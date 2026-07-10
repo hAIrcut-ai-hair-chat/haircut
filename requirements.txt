@@ -23,6 +23,8 @@ cloudinary==1.44.1
 django-cloudinary-storage==0.3.0
 
 celery==5.5.3
+python-magic==0.4.27
+
 django-extensions==4.1
 django-celery-results==2.6.0
 redis==6.4.0
