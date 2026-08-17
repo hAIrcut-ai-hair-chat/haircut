@@ -1,3 +1,5 @@
+from re import S
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -7,7 +9,6 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from parso.tree import BaseNode
 from rest_framework.routers import DefaultRouter
 
 from core.views import (
@@ -21,7 +22,8 @@ from core.views import (
     ForgetPasswordView, 
     UpdatePasswordView,
     ThinkViewSet,
-    PostViewSet
+    PostViewSet,
+    StoryViewSet
 )
 
 from core.mock import MockAiViewSet
@@ -45,6 +47,7 @@ router.register(r'likes', LikeViewSet, basename='likes')
 router.register(r'saves', SaveViewSet, basename='saves')
 router.register(r"think", ThinkViewSet, basename="thinks")
 router.register(r'ai', ImageGenerationViewSet, basename='image-generation')
+router.register(r"story", StoryViewSet, basename="story")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -56,6 +59,9 @@ urlpatterns = [
     path('api/password/code/', ForgetPasswordView.as_view(), name="forget_password"), 
     path('api/password/update/', UpdatePasswordView.as_view(), name="update_password"),
     path('api/ai/mock', MockAiViewSet.as_view(), name="mock_ai"),
+    path("api/accounts/", include("allauth.urls")),
+    path("api/dj-rest-auth/", include("dj_rest_auth.urls")),
+    path("api/dj-rest-auth/registration/", include("dj_rest_auth.registration.urls")),
     path('api/', include(router.urls)),
 ]
 

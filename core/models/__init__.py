@@ -6,3 +6,4 @@ from .room import Room
 from .password import ForgetPassword
 from .post import Post
 from .think import Think
+from .story import Story

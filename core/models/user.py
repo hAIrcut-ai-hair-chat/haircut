@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from isort.profiles import black
 from uploader.models import Image
 
 
@@ -48,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
     avatar = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="avatar", null=True, blank=True)
-
+    username = models.CharField(max_length=255, blank=True, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

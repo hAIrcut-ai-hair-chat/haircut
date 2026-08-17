@@ -5,3 +5,4 @@ from .image_generation import ListImageGenerationSerializer, CreateImageGenerati
 from .user import AvatarSerializer
 from .think import ThinkSerializer
 from .post import PostSerializer, ListPostSerializer
+from .story import StorySerializer

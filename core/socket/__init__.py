@@ -1,3 +1,3 @@
-from .room import RoomConsumer
+from .room import FeedRoom
 from .routing import websocket_urlpatterns
-from .middleware import JwtAuthMiddleware
+from .middleware import TokenAuthMiddleware

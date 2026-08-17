@@ -1,6 +1,6 @@
 from django.urls import re_path
-from core.socket import RoomConsumer
+from core.socket import FeedRoom
 
 websocket_urlpatterns = [
-    re_path(r"ws/room/(?P<room_id>\w+)/$", RoomConsumer.as_asgi())
+    re_path(r"ws/feed/(?P<feed_uuid>[0-9a-f-]+)/$", FeedRoom.as_asgi()),
 ]

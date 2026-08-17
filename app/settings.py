@@ -41,24 +41,24 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "core",
     "uploader",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
-
     "corsheaders.middleware.CorsMiddleware",
-
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-
     "django.contrib.messages.middleware.MessageMiddleware",
-
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "app.urls"
@@ -90,13 +90,21 @@ TEMPLATES = [
 ]
 
 
-DATABASES = {
+"""DATABASES = {
     "default": dj_database_url.parse(
         os.environ.get("DATABASE_URL"),
         conn_max_age=0,
         ssl_require=True
     )
+}"""
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
+
 
 AUTH_USER_MODEL = "core.User"
 
@@ -185,6 +193,7 @@ REST_FRAMEWORK = {
 
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication"
     ),
 }
 
@@ -303,7 +312,7 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "martinsbarroskaua85@gmail.com"
-EMAIL_HOST_PASSWORD = "yjmc vcjo zlhn lela "
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 print(f"MODE = {MODE}")
 
@@ -316,3 +325,43 @@ print(
 print(
     f'CLOUDINARY = {os.getenv("CLOUDINARY_CLOUD_NAME")}'
 )
+SITE_ID = os.getenv('SITE_ID')
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+ACCOUNT_LOGIN_METHODS = {"email"}
+
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_USERNAME_REQUIRED = False
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "TOKEN_MODEL": None,
+    "JWT_AUTH_COOKIE": None,
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {
+        "APP": {
+            "client_id": os.getenv("GITHUB_CLIENT_ID"),
+            "secret": os.getenv("GITHUB_SECRET"),
+            "key": "",
+        },
+        "SCOPE": [
+            "user",
+            "user:email",
+        ],
+    }
+}

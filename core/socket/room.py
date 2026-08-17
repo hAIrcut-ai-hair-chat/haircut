@@ -1,118 +1,132 @@
-import json
 import logging
 
 from channels.db import database_sync_to_async
-from channels.generic.websocket import AsyncWebsocketConsumer
-#from core.tasks import chatAI_teste
-from core.models import User, Room
-from channels.middleware import BaseMiddleware
-from rest_framework_simplejwt.tokens import AccessToken
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from django.core.exceptions import ValidationError
+
+from core.models import Post
+from core.models.room import Room
+from core.serializers import PostSerializer
 
 logger = logging.getLogger(__name__)
 
 
-class RoomConsumer(AsyncWebsocketConsumer):
+class FeedRoom(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
+        logging.log(level=1, msg="Ola")
+        self.user = self.scope.get("user")
+
+        if self.user is None or self.user.is_anonymous:
+            await self.close(code=4001)
+            return
+
+        self.room = self.scope["url_route"]["kwargs"].get("room_id")
+
+        if not self.room:
+            await self.close(code=4002)
+            return
+
+        room_exists = await self.room_exists(self.room)
+        if not room_exists:
+            await self.close(code=4004)
+            return
+
         try:
-            self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-
-            self.room_group_name = f"room_{self.room_id}"
-
             await self.channel_layer.group_add(
-                self.room_group_name,
+                self.room,
                 self.channel_name
             )
-
             await self.accept()
-
-            logger.info(
-                f"Connected to room {self.room_group_name}"
-            )
-
-        except Exception as e:
-            logger.error(f"Connection error: {e}")
-
-            await self.close()
-
-    @database_sync_to_async
-    def get_or_create_room(self, room_uuid):
-        room, _ = Room.objects.get_or_create(
-            uuid=room_uuid
-        )
-
-        return room
-
-    @database_sync_to_async
-    def get_user(self, uuid):
-        if not uuid:
-            raise ValueError("UUID is required")
-
-        try:
-            user = User.objects.get(uuid=uuid)
-
-            return {
-                "uuid": str(user.uuid),
-                "email": user.email,
-                "name": user.name,
-                "profile_image": (
-                    "Ainda não há uma imagem de perfil"
-                )
-            }
-
-        except User.DoesNotExist:
-            raise ValueError("User not found")
-
-    async def receive(self, text_data):
-        try:
-            data = json.loads(text_data)
-
-            message = data.get("message")
-
-            if not message:
-                return
-
-            logger.info(
-                f"Message received: {message}"
-            )
-
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    "type": "chat_message",
-                    "message": message
-                }
-            )
-
-        except json.JSONDecodeError:
-            logger.error("Invalid JSON")
-
-        except Exception as e:
-            logger.error(f"Receive error: {e}")
-
-    async def chat_message(self, event):
-        try:
-            message = event["message"]
-
-            await self.send(
-                text_data=json.dumps({
-                    "message": "Olá tudo bem!"
-                })
-            )
-
-        except Exception as e:
-            logger.error(f"Send error: {e}")
+        except Exception:
+            logger.exception("Erro ao conectar na sala %s", self.room)
+            await self.close(code=4000)
 
     async def disconnect(self, close_code):
         try:
             await self.channel_layer.group_discard(
-                self.room_group_name,
+                self.room,
                 self.channel_name
             )
+        except Exception:
+            logger.exception("Erro ao desconectar da sala %s", getattr(self, "room", None))
 
-            logger.info(
-                f"Disconnected from room {self.room_group_name}"
+    async def receive_json(self, content, **kwargs):
+        text = content.get("text")
+        image = content.get("image")
+
+        if not text and not image:
+            await self.send_json({
+                "error": "É necessário enviar 'text' ou 'image'."
+            })
+            return
+
+        try:
+            post = await self.save_message(self.user, self.room, text, image)
+        except ValidationError as e:
+            await self.send_json({"error": str(e)})
+            return
+        except Exception:
+            logger.exception("Erro ao salvar mensagem na sala %s", self.room)
+            await self.send_json({"error": "Erro interno ao salvar a mensagem."})
+            return
+
+        try:
+            await self.channel_layer.group_send(
+                self.room,
+                {
+                    "type": "feed.message",
+                    "post_uuid": post.uuid
+                }
             )
+        except Exception:
+            logger.exception("Erro ao enviar mensagem para o grupo %s", self.room)
+            await self.send_json({"error": "Erro ao propagar a mensagem."})
 
+    async def feed_message(self, event):
+        post_uuid = event.get("post_uuid")
+
+        try:
+            post = await self.get_post(post_uuid)
+        except Post.DoesNotExist:
+            logger.warning("Post %s não encontrado", post_uuid)
+            return
+        except Exception:
+            logger.exception("Erro ao buscar post %s", post_uuid)
+            return
+
+        try:
+            serializer = PostSerializer(post)
+            await self.send_json({"post": serializer.data})
+        except Exception:
+            logger.exception("Erro ao serializar/enviar post %s", post_uuid)
+
+    @database_sync_to_async
+    def save_message(self, user, room_id, text, image_key):
+        if not room_id:
+            raise ValidationError("room_id não informado")
+
+        try:
+            post = Post.objects.create(
+                user=user,
+                room_id=room_id,
+                text=text,
+                image_key=image_key
+            )
         except Exception as e:
-            logger.error(f"Disconnect error: {e}")
+            logger.exception("Falha ao criar Post")
+            raise ValidationError(f"Não foi possível criar o post: {e}")
+
+        return post
+
+    @database_sync_to_async
+    def get_post(self, post_id):
+        return Post.objects.get(uuid=post_id)
+
+    @database_sync_to_async
+    def room_exists(self, room_id):
+        try:
+            room, created = Room.objects.get_or_create(uuid=room_id)
+            return room
+        except (ValueError, TypeError):
+            return False
