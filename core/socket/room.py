@@ -14,14 +14,13 @@ logger = logging.getLogger(__name__)
 class FeedRoom(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
-        logging.log(level=1, msg="Ola")
-        self.user = self.scope.get("user")
+        self.user = self.scope['user']
 
         if self.user is None or self.user.is_anonymous:
             await self.close(code=4001)
             return
 
-        self.room = self.scope["url_route"]["kwargs"].get("room_id")
+        self.room = self.scope["url_route"]["kwargs"].get("feed_uuid")
 
         if not self.room:
             await self.close(code=4002)
@@ -126,7 +125,7 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def room_exists(self, room_id):
         try:
-            room, created = Room.objects.get_or_create(uuid=room_id)
+            room, created = Room.objects.get_or_create(uuid=room_id, user=self.user)
             return room
         except (ValueError, TypeError):
             return False
