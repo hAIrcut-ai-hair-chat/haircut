@@ -1,3 +1,4 @@
+import json
 import logging
 
 from channels.db import database_sync_to_async
@@ -6,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 from core.models import Post
 from core.models.room import Room
+from core.serializers import ListPostSerializer
 from core.serializers import PostSerializer
 
 logger = logging.getLogger(__name__)
@@ -52,30 +54,40 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
                 self.room_group_name
             )
 
+            posts = await self.get_posts()
+
+            await self.send_json({
+                "posts": posts
+            })
+
         except Exception:
             logger.exception(
                 "Erro ao conectar na sala %s",
                 self.room
             )
+
             await self.close(code=4000)
 
     async def disconnect(self, close_code):
         if not hasattr(self, "room_group_name"):
             return
 
-        try:
-            await self.channel_layer.group_discard(
-                self.room_group_name,
-                self.channel_name
-            )
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
 
-        except Exception:
-            logger.exception(
-                "Erro ao desconectar da sala %s",
-                self.room_group_name
-            )
+        logger.info("WebSocket desconectado: user=%s room=%s code=%s",
+            self.user.id,
+            self.room,
+            close_code
+        )
 
     async def receive_json(self, content, **kwargs):
+        print("RECEBEU", content)
+
+        logger.info("Mensagem recebida via WebSocket: %s",content)
+
         text = content.get("text")
         image = content.get("image")
 
@@ -94,43 +106,48 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
             )
 
         except ValidationError as e:
+            logger.warning(
+                "Erro de validação: %s",
+                e
+            )
+
             await self.send_json({
                 "error": str(e)
             })
+
             return
 
         except Exception:
             logger.exception(
-                "Erro ao salvar mensagem na sala %s",
-                self.room
+                "Erro ao salvar post"
             )
 
             await self.send_json({
-                "error": "Erro interno ao salvar a mensagem."
+                "error": "Erro interno ao salvar a postagem."
             })
+
             return
 
-        try:
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    "type": "feed.message",
-                    "post_uuid": str(post.uuid)
-                }
-            )
+        logger.info(
+            "Post criado: %s",
+            post.uuid
+        )
 
-        except Exception:
-            logger.exception(
-                "Erro ao enviar mensagem para o grupo %s",
-                self.room_group_name
-            )
-
-            await self.send_json({
-                "error": "Erro ao propagar a mensagem."
-            })
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "feed.message",
+                "post_uuid": str(post.uuid)
+            }
+        )
 
     async def feed_message(self, event):
         post_uuid = event.get("post_uuid")
+
+        logger.info(
+            "Propagando post: %s",
+            post_uuid
+        )
 
         try:
             post = await self.get_post(post_uuid)
@@ -157,10 +174,7 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
             })
 
         except Exception:
-            logger.exception(
-                "Erro ao serializar/enviar post %s",
-                post_uuid
-            )
+            logger.exception("Erro ao serializar post %s", post_uuid)
 
     @database_sync_to_async
     def save_message(self, user, room_id, text, image_key):
@@ -169,32 +183,32 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
 
         try:
             return Post.objects.create(
-                user=user,
-                room_id=room_id,
-                text=text,
-                image_key=image_key
+                author_comment=text,
+                image=image_key
+                
             )
 
         except Exception as e:
             logger.exception("Falha ao criar Post")
 
-            raise ValidationError(
-                f"Não foi possível criar o post: {e}"
-            )
+            raise ValidationError(f"Não foi possível criar o post: {e}")
 
     @database_sync_to_async
-    def get_post(self, post_id):
-        return Post.objects.all()
+    def get_post(self, post_uuid):
+        return Post.objects.get(uuid=post_uuid)
+
+    @database_sync_to_async
+    def get_posts(self):
+        posts = Post.objects.all()
+
+        serializer = ListPostSerializer(posts, many=True)
+
+        return serializer.data
 
     @database_sync_to_async
     def room_exists(self, room_id, user):
         try:
-            room, created = Room.objects.get_or_create(
-                uuid=room_id,
-                defaults={
-                    "user": user
-                }
-            )
+            room, created = Room.objects.get_or_create(uuid=room_id, defaults={"user": user})
             return room
         except (ValueError, TypeError):
             return None
