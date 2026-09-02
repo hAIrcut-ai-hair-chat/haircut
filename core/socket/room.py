@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class FeedRoom(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
-        self.user = self.scope.get("user")
+        self.user = self.scope['user']
 
         if self.user is None or self.user.is_anonymous:
             await self.close(code=4001)
@@ -28,10 +28,7 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
             await self.close(code=4002)
             return
 
-        room = await self.room_exists(
-            self.room,
-            self.user
-        )
+        room = await self.room_exists(self.room, self.user)
 
         if room is None:
             await self.close(code=4004)
@@ -40,10 +37,7 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
         self.room_group_name = f"feed_{self.room}"
 
         try:
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
             await self.accept()
 
@@ -56,15 +50,10 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
 
             posts = await self.get_posts()
 
-            await self.send_json({
-                "posts": posts
-            })
+            await self.send_json({"posts": posts})
 
         except Exception:
-            logger.exception(
-                "Erro ao conectar na sala %s",
-                self.room
-            )
+            logger.exception("Erro ao conectar na sala %s",self.room)
 
             await self.close(code=4000)
 
@@ -72,16 +61,9 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
         if not hasattr(self, "room_group_name"):
             return
 
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        logger.info("WebSocket desconectado: user=%s room=%s code=%s",
-            self.user.id,
-            self.room,
-            close_code
-        )
+        logger.info("WebSocket desconectado: user=%s room=%s code=%s", self.user.id, self.room, close_code)
 
     async def receive_json(self, content, **kwargs):
         print("RECEBEU", content)
@@ -92,46 +74,25 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
         image = content.get("image")
 
         if not text and not image:
-            await self.send_json({
-                "error": "É necessário enviar 'text' ou 'image'."
-            })
+            await self.send_json({"error": "É necessário enviar 'text' ou 'image'."})
             return
 
         try:
-            post = await self.save_message(
-                self.user,
-                self.room,
-                text,
-                image
+            post = await self.save_message(self.user, text, image
             )
 
         except ValidationError as e:
-            logger.warning(
-                "Erro de validação: %s",
-                e
-            )
+            logger.warning("Erro de validação: %s", e)
 
-            await self.send_json({
-                "error": str(e)
-            })
-
+            await self.send_json({"error": str(e)})
             return
 
         except Exception:
-            logger.exception(
-                "Erro ao salvar post"
-            )
-
-            await self.send_json({
-                "error": "Erro interno ao salvar a postagem."
-            })
-
+            logger.exception("Erro ao salvar post")
+            await self.send_json({"error": "Erro interno ao salvar a postagem."})
             return
 
-        logger.info(
-            "Post criado: %s",
-            post.uuid
-        )
+        logger.info("Post criado: %s", post.uuid)
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -144,26 +105,17 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
     async def feed_message(self, event):
         post_uuid = event.get("post_uuid")
 
-        logger.info(
-            "Propagando post: %s",
-            post_uuid
-        )
+        logger.info("Propagando post: %s", post_uuid)
 
         try:
             post = await self.get_post(post_uuid)
 
         except Post.DoesNotExist:
-            logger.warning(
-                "Post %s não encontrado",
-                post_uuid
-            )
+            logger.warning("Post %s não encontrado", post_uuid)
             return
 
         except Exception:
-            logger.exception(
-                "Erro ao buscar post %s",
-                post_uuid
-            )
+            logger.exception("Erro ao buscar post %s", post_uuid)
             return
 
         try:
@@ -177,16 +129,11 @@ class FeedRoom(AsyncJsonWebsocketConsumer):
             logger.exception("Erro ao serializar post %s", post_uuid)
 
     @database_sync_to_async
-    def save_message(self, user, room_id, text, image_key):
-        if not room_id:
-            raise ValidationError("room_id não informado")
+    def save_message(self, user, text, image_instance):
+        print(image_instance)
 
         try:
-            return Post.objects.create(
-                author_comment=text,
-                image=image_key
-                
-            )
+            return Post.objects.create(author_comment=text, image=image_instance, user=user)
 
         except Exception as e:
             logger.exception("Falha ao criar Post")
